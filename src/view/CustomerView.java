@@ -8,7 +8,6 @@ import model.Customer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.*;
 
 public class CustomerView {
     private CustomerController customerController = new CustomerController();
@@ -29,6 +28,7 @@ public class CustomerView {
             while(!exit){
                 System.out.println("Enter customer's ID or c to cancel:");
                 userInput = br.readLine().trim().toLowerCase();
+
                 if(userInput.equals("c")) {
                     returnToMainMenuBar();
                     exit = true;
@@ -40,7 +40,8 @@ public class CustomerView {
 
             while(!exit){
                 System.out.println("Enter customer's name or c to cancel:");
-                userInput = br.readLine().trim().toLowerCase();
+                userInput = br.readLine().trim();
+
                 if(userInput.equals("c")) {
                     returnToMainMenuBar();
                     exit = true;
@@ -58,7 +59,7 @@ public class CustomerView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 while (!userInput.equals("y") && !userInput.equals("n")) {
-                    System.out.println("Add project to customer? Please, enter y = yes or n = no:");
+                    System.out.println("Add project to customer? Enter y = yes or n = no:");
                     userInput = br.readLine().trim().toLowerCase();
                 }
 
@@ -69,6 +70,7 @@ public class CustomerView {
                     System.out.println("There is list of projects:");
                     System.out.println("--------------------------");
                     projectController.readAll();
+                    System.out.println();
 
                     System.out.println("Enter ID of project you're going to add:");
                     userInput = br.readLine().trim().toLowerCase();
@@ -91,6 +93,7 @@ public class CustomerView {
 
     public void showCustomerById() {
         boolean exit = false;
+
         try {
             while(!exit) {
                 System.out.println("Enter ID of customer or c to cancel:");
@@ -98,8 +101,6 @@ public class CustomerView {
 
                 if(!userInput.equals("c")) {
                     customerController.read(Integer.parseInt(userInput));
-                    returnToMainMenuBar();
-                    exit = true;
                 } else {
                     returnToMainMenuBar();
                     exit = true;
@@ -111,14 +112,35 @@ public class CustomerView {
     }
 
     public void showAllCustomers() {
+        boolean exit = false;
+
         customerController.readAll();
         System.out.println();
-        returnToMainMenuBar();
+
+        try {
+            while(!exit) {
+                System.out.println("Enter c to back to main menu:");
+                userInput = br.readLine().trim().toLowerCase();
+
+                while(!userInput.equals("c")) {
+                    System.out.println("Enter c to back to main menu:");
+                    userInput = br.readLine().trim().toLowerCase();
+                }
+
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateCustomer() {
-        String userInputCustomerName;
         boolean exit = false;
+
+        String userInputCustomerName;
 
         Integer id = null;
 
@@ -139,11 +161,11 @@ public class CustomerView {
                 }
             }
 
-            while(!exit) {
+            while(true) {
                 System.out.println("Change name? y = yes, n = no:");
                 userInput = br.readLine().trim().toLowerCase();
 
-                if(userInput.equals("n")) {
+                if (userInput.equals("n")) {
                     break;
                 } else {
                     System.out.println("Enter new customer name:");
@@ -155,11 +177,12 @@ public class CustomerView {
                 }
             }
 
+
             do {
                 System.out.println("Change project? y = yes, n = no:");
                 userInput = br.readLine().trim().toLowerCase();
                 System.out.println();
-            } while(!userInput.equals("y") & !userInput.equals("n"));
+            } while (!userInput.equals("y") & !userInput.equals("n"));
 
             if (userInput.equals("n")) {
                 exit = true;
@@ -213,30 +236,30 @@ public class CustomerView {
         boolean exit = false;
 
         try {
-            do {
+            while(!exit) {
                 System.out.println("There is lis of customers:");
                 System.out.println("--------------------------");
                 customerController.readAll();
                 System.out.println();
 
-                System.out.println("Enter ID of customer you're going to delete:");
+                System.out.println("Enter ID of customer you're going to delete or c to cancel:");
                 userInput = br.readLine().trim().toLowerCase();
 
                 if(!userInput.equals("c")) {
                     customerController.delete(Integer.parseInt(userInput));
                     returnToMainMenuBar();
-                    exit = true;
+                    break;
                 } else {
                     returnToMainMenuBar();
                     exit = true;
                 }
-            } while(!exit);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void returnToMainMenuBar() {
+    private void returnToMainMenuBar() {
         try {
             System.out.print("Returning to main menu.");
             Thread.currentThread().sleep(300);

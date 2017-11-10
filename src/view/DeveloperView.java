@@ -295,22 +295,20 @@ public class DeveloperView {
     }
 
     public void showDeveloperById() {
+        boolean exit = false;
+
         try {
-            do {
+            while(!exit) {
                 System.out.println("Enter developer's ID or c to cancel: ");
                 userInput = br.readLine().trim();
-                System.out.println();
+
                 if(!userInput.equals("c")) {
                     developerController.read(Integer.parseInt(userInput));
-                    System.out.println();
-                    returnToMainMenuBar();
-                    break;
                 } else {
-                    System.out.println();
                     returnToMainMenuBar();
-                    break;
+                    exit = true;
                 }
-            } while (true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

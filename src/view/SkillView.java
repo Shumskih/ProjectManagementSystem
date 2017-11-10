@@ -24,98 +24,113 @@ public class SkillView {
        boolean exit = false;
 
        try {
-           do {
-               do {
-                   System.out.println("Enter skill's ID or c to cancel:");
-                   userInput = br.readLine().trim().toLowerCase();
-                   if(userInput.equals("c")) {
-                       exit = true;
-                       break;
-                   } else {
-                       skillId = Integer.parseInt(userInput);
-                   }
-                   break;
-               } while(true);
+           while(!exit) {
+               System.out.println("Enter skill's ID or c to cancel:");
+               userInput = br.readLine().trim().toLowerCase();
 
-               do {
-                   if(!exit) {
-                       System.out.println("Enter name of skill or c to cancel:");
-                       userInput = br.readLine().trim().toLowerCase();
-                       if(userInput.equals("c")) {
-                           exit = true;
-                           break;
-                       } else {
-                           skillName = userInput;
-                       }
-                       break;
-                   } else {
-                       break;
-                   }
-               } while(true);
-
-               if(!exit) {
-                   Skill skill = new Skill(skillId, skillName);
-                   skillController.create(skill);
+               if (userInput.equals("c")) {
                    returnToMainMenuBar();
-                   break;
+                   exit = true;
                } else {
-                   returnToMainMenuBar();
+                   skillId = Integer.parseInt(userInput);
                    break;
                }
+           }
 
-           } while(!exit);
+           while(!exit) {
+               System.out.println("Enter name of skill or c to cancel:");
+               userInput = br.readLine().trim();
+
+               if (userInput.equals("c")) {
+                   returnToMainMenuBar();
+                   exit = true;
+               } else {
+                   skillName = userInput;
+                   break;
+               }
+           }
+
+            if(!exit) {
+                Skill skill = new Skill(skillId, skillName);
+                skillController.create(skill);
+                returnToMainMenuBar();
+            }
        } catch (IOException e) {
            e.printStackTrace();
        }
    }
 
    public void showSkillById() {
+       boolean exit = false;
        try {
-           do {
+           while(!exit) {
                System.out.println("Enter ID of skill or c to cancel:");
                userInput = br.readLine().trim().toLowerCase();
+
                if(!userInput.equals("c")) {
                    skillController.read(Integer.parseInt(userInput));
-                   returnToMainMenuBar();
-                   break;
                } else {
                    returnToMainMenuBar();
-                   break;
+                   exit = true;
                }
-           } while(true);
+           }
        } catch (IOException e) {
            e.printStackTrace();
        }
    }
 
    public void showAllSkills() {
+       boolean exit = false;
+
        skillController.readAll();
        System.out.println();
-       returnToMainMenuBar();
+
+       try {
+           while(!exit) {
+               System.out.println("Enter c to back to main menu:");
+               userInput = br.readLine().trim().toLowerCase();
+
+               while(!userInput.equals("c")) {
+                   System.out.println("Enter c to back to main menu:");
+                   userInput = br.readLine().trim().toLowerCase();
+               }
+
+               if (userInput.equals("c")) {
+                   returnToMainMenuBar();
+                   exit = true;
+               }
+           }
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
    }
 
     public void updateSkill() {
        String userInputSkillName;
+       boolean exit = false;
 
        try {
-           do {
+           while(!exit) {
                System.out.println("Enter ID of skill you're going to update or c to cancel:");
                userInput = br.readLine().trim().toLowerCase();
                if(userInput.equals("c")) {
-                   break;
+                   returnToMainMenuBar();
+                   exit = true;
                } else {
                    Integer id = Integer.parseInt(userInput);
                    System.out.println("This is a skill you're going to update:");
                    skillController.read(id);
+                   break;
                }
-               break;
-           } while(true);
+           }
 
-           do {
+           while(!exit) {
                System.out.println("Change name? y = yes, n = no:");
                userInput = br.readLine().trim().toLowerCase();
+
                if(userInput.equals("n")) {
-                   break;
+                   returnToMainMenuBar();
+                   exit = true;
                } else {
                    System.out.println("Enter new name of skill:");
                    userInputSkillName = br.readLine().trim();
@@ -125,34 +140,35 @@ public class SkillView {
                    returnToMainMenuBar();
                    break;
                }
-           } while(true);
-
+           }
        } catch (IOException e) {
            e.printStackTrace();
        }
-
     }
 
    public void deleteSkill() {
+       boolean exit = false;
+
        try {
-           do {
+           while(!exit) {
                System.out.println("Enter ID of skill you are going to delete or c to cancel:");
                userInput = br.readLine().trim().toLowerCase();
+
                if(!userInput.equals("c")) {
                    skillController.delete(Integer.parseInt(userInput));
                    returnToMainMenuBar();
                    break;
                } else {
                    returnToMainMenuBar();
-                   break;
+                   exit = true;
                }
-           } while(true);
+           }
        } catch (IOException e) {
            e.printStackTrace();
        }
    }
 
-    public void returnToMainMenuBar() {
+    private void returnToMainMenuBar() {
         try {
             System.out.println();
             System.out.print("Returning to main menu.");

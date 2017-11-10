@@ -108,19 +108,20 @@ public class ProjectView {
     }
 
     public void showProjectById() {
+        boolean exit = false;
+
         try {
-            do {
+            while(!exit) {
                 System.out.println("Enter ID of project or c to cancel:");
                 userInput = br.readLine().trim().toLowerCase();
+
                 if(!userInput.equals("c")) {
                     projectController.read(Integer.parseInt(userInput));
-                    returnToMainMenuBar();
-                    break;
                 } else {
                     returnToMainMenuBar();
-                    break;
+                    exit = true;
                 }
-            } while(true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

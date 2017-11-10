@@ -18,6 +18,7 @@ import java.util.Set;
 public class CompanyView {
     private CompanyController companyController = new CompanyController();
     private ProjectController projectController = new ProjectController();
+    CompaniesProjectsDAO companiesProjectsDAO = new CompaniesProjectsDAO();
 
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -33,154 +34,149 @@ public class CompanyView {
         boolean exit = false;
 
         try {
-            do {
-                System.out.println("Enter ID of company or c to cancel:");
-                userInput = br.readLine().trim().toLowerCase();
-                if (userInput.equals("c")) {
-                    exit = true;
-                } else {
-                    companyId = Integer.parseInt(userInput);
-                }
+             while(!exit) {
+                 System.out.println("Enter ID of company or c to cancel:");
+                 userInput = br.readLine().trim().toLowerCase();
 
-                if (!exit) {
+                 if (userInput.equals("c")) {
+                     returnToMainMenuBar();
+                     exit = true;
+                 } else {
+                     companyId = Integer.parseInt(userInput);
+                     break;
+                 }
+             }
+
+                while(!exit) {
                     System.out.println("Enter name of company or c to cancel:");
-                    userInput = br.readLine().trim().toLowerCase();
+                    userInput = br.readLine().trim();
+
                     if (userInput.equals("c")) {
+                        returnToMainMenuBar();
                         exit = true;
                     } else {
                         companyName = userInput;
+
+                        Company company = new Company(companyId, companyName);
+                        companyController.create(company);
+                        break;
                     }
                 }
 
-                if(!exit) {
-                    Company company = new Company(companyId, companyName);
-                    companyController.create(company);
-                    System.out.println("Company created");
-                }
-
-                if (!exit) {
+                while(!exit) {
                     System.out.println("Add project to company? y = yes or n = no:");
                     userInput = br.readLine().trim().toLowerCase();
+
+                    while (!userInput.equals("y") && !userInput.equals("n")) {
+                        System.out.println("Add project to company? Enter y = yes or n = no:");
+                        userInput = br.readLine().trim().toLowerCase();
+                    }
+
                     if (userInput.equals("n")) {
+                        returnToMainMenuBar();
                         exit = true;
                     } else {
                         System.out.println("There is list of projects:");
+                        System.out.println("--------------------------");
                         projectController.readAll();
                         System.out.println();
 
-                        do {
-                            System.out.println("Enter ID of project you're going to add:");
-                            userInput = br.readLine().trim().toLowerCase();
+                        System.out.println("Enter ID of project you're going to add:");
+                        userInput = br.readLine().trim().toLowerCase();
 
-                            try {
-                                Class.forName(DBConnectionDAO.JDBC_DRIVER);
-                                Connection connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-                                PreparedStatement prepStatReadProject = connection.prepareStatement(JavaIOProjectDAOImpl.SHOW_PROJECT);
-                                prepStatReadProject.setInt(1, Integer.parseInt(userInput));
-                                ResultSet resultSet = prepStatReadProject.executeQuery();
+                        companiesProjectsDAO.insert(companyId, Integer.parseInt(userInput));
 
-                                while (resultSet.next()) {
-                                    int projectId = resultSet.getInt("id");
+                        System.out.println("Add another project to company? y = yes or n = no:");
+                        userInput = br.readLine().trim().toLowerCase();
 
-                                    if(projectId == Integer.parseInt(userInput)) {
-                                        String projectName = resultSet.getString("name");
-                                        String projectVersion = resultSet.getString("version");
-                                        Integer projectCost = resultSet.getInt("cost");
-
-                                        project = new Project(projectId, projectName, projectVersion, projectCost);
-                                        projects.add(project);
-                                    }
-
-                                }
-                                PreparedStatement preparedStatement = connection.prepareStatement(DBConnectionDAO.INSERT_NEW_COMPANIES_PROJECTS);
-                                preparedStatement.setInt(1, companyId);
-                                preparedStatement.setInt(2, Integer.parseInt(userInput));
-
-                                preparedStatement.executeUpdate();
-
-                                System.out.println("Project added");
-
-                                resultSet.close();
-                                prepStatReadProject.close();
-                                preparedStatement.close();
-                                connection.close();
-                            } catch (ClassNotFoundException | SQLException e) {
-                                e.printStackTrace();
-                            }
-
-                            System.out.println("Add another project to company? y = yes or n = no:");
-                            userInput = br.readLine().trim().toLowerCase();
-                            if(userInput.equals("n")) {
-                                projects.clear();
-                                project = null;
-                                returnToMainMenuBar();
-                                exit = true;
-                            }
-                        } while(!exit);
+                        if(userInput.equals("n")) {
+                            returnToMainMenuBar();
+                            exit = true;
+                        }
                     }
                 }
-
-                if (!exit) {
-                    Company company = new Company(companyId, companyName);
-                    companyController.create(company);
-                    exit = true;
-                    returnToMainMenuBar();
-                }
-
-            } while (!exit);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void showCompanyById() {
+        boolean exit = false;
+
         try {
-            do {
+            while(!exit) {
                 System.out.println("Enter ID of company or c to cancel:");
                 userInput = br.readLine().trim().toLowerCase();
+
                 if (!userInput.equals("c")) {
                     companyController.read(Integer.parseInt(userInput));
-                    break;
                 } else {
-                    break;
+                    returnToMainMenuBar();
+                    exit = true;
                 }
-            } while (true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void showAllCompanies() {
+        boolean exit = false;
+
         companyController.readAll();
+        System.out.println();
+
+        try {
+            while(!exit) {
+                System.out.println("Enter c to back to main menu:");
+                userInput = br.readLine().trim().toLowerCase();
+
+                while(!userInput.equals("c")) {
+                    System.out.println("Enter c to back to main menu:");
+                    userInput = br.readLine().trim().toLowerCase();
+                }
+
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void updateCompany() {
-        Connection connection = null;
-        PreparedStatement preparedStatement;
-        PreparedStatement prepStatCompaniesProjects;
-        PreparedStatement prepStatProjects;
+        boolean exit = false;
 
         String userInputCompanyName;
-        boolean exit = false;
 
         Integer id = null;
 
         try {
-            System.out.println("Enter ID of company you're going to update or c to cancel:");
-            userInput = br.readLine().trim().toLowerCase();
-            if (userInput.equals("c")) {
-                exit = true;
-                returnToMainMenuBar();
-            } else {
-                id = Integer.parseInt(userInput);
-                companyController.read(id);
+            while(!exit) {
+                System.out.println("Enter ID of company you're going to update or c to cancel:");
+                userInput = br.readLine().trim().toLowerCase();
+
+                if (userInput.equals("c")) {
+                    exit = true;
+                    returnToMainMenuBar();
+                } else {
+                    id = Integer.parseInt(userInput);
+
+                    System.out.println("This is a company you're going to update:");
+                    companyController.read(id);
+                    break;
+                }
             }
 
-            do {
+            while(true) {
                 System.out.println("Change name? y = yes, n = no:");
                 userInput = br.readLine().trim().toLowerCase();
+
                 if (userInput.equals("n")) {
-                    exit = true;
+                    break;
                 } else {
                     System.out.println("Enter new company name:");
                     userInputCompanyName = br.readLine().trim();
@@ -189,110 +185,56 @@ public class CompanyView {
                     companyController.update(company);
                     break;
                 }
-            } while(!exit);
+            }
 
             do {
-                do {
-                    System.out.println("Change projects? y = yes, n = no:");
-                    userInput = br.readLine().trim().toLowerCase();
-                } while(!userInput.equals("y") & !userInput.equals("n"));
-                if (userInput.equals("n")) {
-                    exit = true;
-                    returnToMainMenuBar();
-                    break;
-                } else {
-                    System.out.println("There is list of projects company has:");
-                    System.out.println("--------------------------------------");
-                    try {
-                        Class.forName(DBConnectionDAO.JDBC_DRIVER);
-                        connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-                        prepStatCompaniesProjects = connection.prepareStatement(DBConnectionDAO.SHOW_COMPANIES_PROJECTS);
-                        prepStatCompaniesProjects.setInt(1, id);
-                        ResultSet resSetCompaniesProjects = prepStatCompaniesProjects.executeQuery();
+                System.out.println("Change projects? y = yes, n = no:");
+                userInput = br.readLine().trim().toLowerCase();
+            } while(!userInput.equals("y") & !userInput.equals("n"));
 
-                        while (resSetCompaniesProjects.next()) {
-                            Integer companyId = resSetCompaniesProjects.getInt("company_id");
-                            Integer projectId = resSetCompaniesProjects.getInt("project_id");
+            if (userInput.equals("n")) {
+                exit = true;
+                returnToMainMenuBar();
+            } else {
+                System.out.println("There is list of projects company has:");
+                System.out.println("--------------------------------------");
+                companiesProjectsDAO.readListOfProjects(id);
+            }
 
-                            if (companyId == id) {
-                                prepStatProjects = connection.prepareStatement(JavaIOProjectDAOImpl.SHOW_PROJECT);
-                                prepStatProjects.setInt(1, projectId);
-                                ResultSet resSetProjects = prepStatProjects.executeQuery();
-
-                                while (resSetProjects.next()) {
-                                    Integer projectID = resSetProjects.getInt("id");
-
-                                    if (projectID == projectId) {
-                                        String projectName = resSetProjects.getString("name");
-                                        String projectVersion = resSetProjects.getString("version");
-                                        Integer projectCost = resSetProjects.getInt("cost");
-
-                                        project = new Project(projectID, projectName, projectVersion, projectCost);
-                                        projects.add(project);
-                                    }
-                                }
-                            }
-                        }
-                        if (projects.isEmpty()) {
-                            System.out.println("Company hasn't projects");
-                        } else {
-                            for (Project p : projects) {
-                                System.out.println("ID: " + p.getId());
-                                System.out.println("Name: " + p.getName());
-                                System.out.println("===============");
-                            }
-                        }
-                    } catch (ClassNotFoundException | SQLException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-            } while(!exit);
-
-            exit = false;
-            if(!exit) {
+            while(!exit) {
                 System.out.println("Delete project or insert new? d = delete, i = insert new:");
                 userInput = br.readLine().trim().toLowerCase();
+
                 if (!userInput.equals("d") && !userInput.equals("i")) {
                     do {
                         System.out.println("Enter d to delete project or i to insert new:");
                         userInput = br.readLine().trim().toLowerCase();
                     } while (!userInput.equals("d") && !userInput.equals("i"));
+
                 } else {
                     if (userInput.equals("d")) {
                         System.out.println("Enter ID of project you're going to delete:");
                         userInput = br.readLine().trim().toLowerCase();
-                        try {
-                            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-                            PreparedStatement prepSatDeleteFromCompaniesProjects = connection.prepareStatement(DBConnectionDAO.DELETE_COMPANIES_PROJECTS);
-                            prepSatDeleteFromCompaniesProjects.setInt(1, Integer.parseInt(userInput));
-                            prepSatDeleteFromCompaniesProjects.executeUpdate();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        System.out.println("Project has deleted");
+                        System.out.println();
+
+                        companiesProjectsDAO.deleteByProject(Integer.parseInt(userInput));
                         returnToMainMenuBar();
+                        exit = true;
                     } else {
                         System.out.println("There is list of projects:");
                         projectController.readAll();
                         System.out.println();
+
                         System.out.println("Enter ID of project you're going to add:");
                         userInput = br.readLine().trim().toLowerCase();
+                        System.out.println();
 
-                        try {
-                            PreparedStatement prepStatAddProjectToCompany = connection.prepareStatement(DBConnectionDAO.INSERT_NEW_COMPANIES_PROJECTS);
-                            prepStatAddProjectToCompany.setInt(1, id);
-                            prepStatAddProjectToCompany.setInt(2, Integer.parseInt(userInput));
-                            prepStatAddProjectToCompany.executeUpdate();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        System.out.println("Project has added");
+                        companiesProjectsDAO.insert(id, Integer.parseInt(userInput));
                         returnToMainMenuBar();
+                        exit = true;
                     }
                 }
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -300,37 +242,33 @@ public class CompanyView {
     }
 
     public void deleteCompany() {
-        Connection connection = null;
         boolean exit = false;
+
         try {
-            do {
+            while(!exit) {
                 System.out.println("There is lis of companies:");
                 System.out.println("--------------------------");
                 companyController.readAll();
+                System.out.println();
 
                 System.out.println("Enter ID of company you are going to delete or c to cancel:");
                 userInput = br.readLine().trim().toLowerCase();
+
                 if (!userInput.equals("c")) {
                     companyController.delete(Integer.parseInt(userInput));
-                    try {
-                        Class.forName(DBConnectionDAO.JDBC_DRIVER);
-                        connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-
-                    } catch(ClassNotFoundException | SQLException e) {
-                        e.printStackTrace();
-                    }
+                    returnToMainMenuBar();
+                    break;
+                } else {
                     returnToMainMenuBar();
                     exit = true;
-                } else {
-                    exit = true;
                 }
-            } while (!exit);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void returnToMainMenuBar() {
+    private void returnToMainMenuBar() {
         try {
             System.out.println();
             System.out.print("Returning to main menu.");

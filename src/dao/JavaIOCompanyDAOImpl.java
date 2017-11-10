@@ -63,7 +63,7 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
     public void read(int id) {
         Connection connection = null;
         PreparedStatement prepStatShowCompany = null;
-        PreparedStatement prepStatReadProject;
+        PreparedStatement prepStatReadProject = null;
 
         try {
 
@@ -83,16 +83,16 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
                 if (companyId == id) {
                     String name = resultSetCompany.getString("name");
 
-                    while(resSetCompaniesProjects.next()) {
+                    while (resSetCompaniesProjects.next()) {
                         int companyID = resSetCompaniesProjects.getInt("company_id");
                         int projectID = resSetCompaniesProjects.getInt("project_id");
 
-                        if(companyID == companyId) {
+                        if (companyID == companyId) {
                             PreparedStatement prepStatProjects = connection.prepareStatement(JavaIOProjectDAOImpl.SHOW_PROJECT);
                             prepStatProjects.setInt(1, projectID);
                             ResultSet resultSet = prepStatProjects.executeQuery();
 
-                            while(resultSet.next()) {
+                            while (resultSet.next()) {
                                 Integer projectId = resultSet.getInt("id");
                                 String projectName = resultSet.getString("name");
                                 String projectVersion = resultSet.getString("version");
@@ -101,21 +101,30 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
                                 project = new Project(projectId, projectName, projectVersion, projectCost);
                                 projects.add(project);
                             }
+                            resultSet.close();
+                            prepStatProjects.close();
                         }
                     }
-
                     System.out.println();
                     System.out.println("====================");
                     System.out.println("ID: " + companyId + "\n" +
-                                        "Name: " + name + "\n" +
-                                        "Projects: ");
-                    for(Project p:projects) {
-                        System.out.println("------" + p.getName());
+                                        "Name: " + name);
+                    if (projects.isEmpty()) {
+                        System.out.println("Projects: no projects");
+                    } else {
+                        System.out.println("Projects:");
+                        for (Project p : projects) {
+                            System.out.println("------" + p.getName());
+                        }
                     }
                     System.out.println("====================");
                     System.out.println();
                 }
             }
+            resSetCompaniesProjects.close();
+            resultSetCompany.close();
+
+            projects.clear();
         } catch (ClassNotFoundException e) {
             System.out.println("Driver not found");
             e.printStackTrace();
@@ -125,6 +134,7 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
         } finally {
             try {
                 prepStatShowCompany.close();
+                prepStatReadProject.close();
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();

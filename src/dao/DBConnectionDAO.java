@@ -1,9 +1,5 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 public class DBConnectionDAO {
     public static final String JDBC_DRIVER = "org.postgresql.Driver";
     public static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
@@ -24,15 +20,4 @@ public class DBConnectionDAO {
     public static final String INSERT_CUSTOMERS_PROJECTS = "INSERT INTO customers_projects VALUES(?,?)";
     public static final String SELECT_CUSTOMERS_FROM_CUSTOMERS_PROJECTS = "SELECT * FROM customers_projects WHERE customer_id=?";
     public static final String DELETE_CUSTOMER_FROM_CUSTOMERS_PROJECTS = "DELETE FROM customers_projects WHERE customer_id=?";
-
-    Connection connection = null;
-
-    public void dbConnect() {
-        try {
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
-        } catch(ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }
