@@ -1,14 +1,11 @@
 package view;
 
 import controller.SkillController;
-import dao.JavaIODeveloperDAOImpl;
-import dao.JavaIOSkillDAOImpl;
 import model.Skill;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.*;
 
 public class SkillView {
     private SkillController skillController = new SkillController();

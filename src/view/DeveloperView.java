@@ -4,9 +4,9 @@ import controller.DeveloperController;
 import controller.ProjectController;
 import controller.SkillController;
 import dao.DBConnectionDAO;
-import dao.JavaIODeveloperDAOImpl;
+import dao.DeveloperSkillsDAO;
 import dao.JavaIOProjectDAOImpl;
-import dao.JavaIOSkillDAOImpl;
+import dao.ProjectsDeveloperDAO;
 import model.Developer;
 import model.Project;
 import model.Skill;
@@ -22,7 +22,8 @@ public class DeveloperView {
     private DeveloperController developerController = new DeveloperController();
     private SkillController skillController = new SkillController();
     private ProjectController projectController = new ProjectController();
-    private DBConnectionDAO dbConnectionDAO = new DBConnectionDAO();
+    private ProjectsDeveloperDAO projectsDeveloperDAO = new ProjectsDeveloperDAO();
+    private DeveloperSkillsDAO developerSkillsDAO = new DeveloperSkillsDAO();
 
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -39,255 +40,145 @@ public class DeveloperView {
 
     private String userInput;
 
-    private static final String INSERT_NEW_DEVELOPER_SKILLS = "INSERT INTO developers_skills VALUES(?,?)";
-    private static final String INSERT_NEW_PROJECTS_DEVELOPERS = "INSERT INTO projects_developers VALUES(?,?)";
-
     public void createDeveloper() {
         boolean exit = false;
 
         try {
-            do {
-                do {
-                    System.out.println("Enter developer's ID or c to cancel:");
-                    userInput = br.readLine().trim().toLowerCase();
-                    if (userInput.equals("c")) {
-                        returnToMainMenuBar();
-                        exit = true;
-                        break;
-                    } else {
-                        developerId = Integer.parseInt(userInput);
-                    }
+            while(!exit) {
+                System.out.println("Enter developer's ID or c to cancel:");
+                userInput = br.readLine().trim().toLowerCase();
+
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                } else {
+                    developerId = Integer.parseInt(userInput);
                     break;
-                } while (true);
+                }
+            }
 
-                do {
-                    if (!exit) {
-                        System.out.println("Enter developer's name or c to cancel:");
-                        userInput = br.readLine().trim().toLowerCase();
-                        if (userInput.equals("c")) {
-                            returnToMainMenuBar();
-                            exit = true;
-                            break;
-                        } else {
-                            developerName = userInput;
-                        }
-                        break;
-                    } else {
-                        returnToMainMenuBar();
-                        break;
-                    }
-                } while (true);
+            while(!exit) {
+                System.out.println("Enter developer's name or c to cancel:");
+                userInput = br.readLine().trim();
 
-                do {
-                    if (!exit) {
-                        System.out.println("Enter developer's specialization or c to cancel:");
-                        userInput = br.readLine().trim();
-                        if (userInput.equals("c")) {
-                            returnToMainMenuBar();
-                            exit = true;
-                            break;
-                        } else {
-                            developerSpecialization = userInput;
-                        }
-                        break;
-                    } else {
-                        returnToMainMenuBar();
-                        break;
-                    }
-                } while (true);
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                } else {
+                    developerName = userInput;
+                    break;
+                }
+            }
 
-                do {
-                    if (!exit) {
-                        System.out.println("Enter developer's experience or c to cancel:");
-                        userInput = br.readLine().trim();
-                        if (userInput.equals("c")) {
-                            returnToMainMenuBar();
-                            exit = true;
-                            break;
-                        } else {
-                            developerExperience = Integer.parseInt(userInput);
-                        }
-                        break;
-                    } else {
-                        break;
-                    }
-                } while (true);
+            while(!exit) {
+                System.out.println("Enter developer's specialization or c to cancel:");
+                userInput = br.readLine().trim();
 
-                do {
-                    if (!exit) {
-                        System.out.println("Enter developer's salary or c to cancel:");
-                        userInput = br.readLine().trim();
-                        if (userInput.equals("c")) {
-                            returnToMainMenuBar();
-                            exit = true;
-                            break;
-                        } else {
-                            developerSalary = Integer.parseInt(userInput);
-                        }
-                        break;
-                    } else {
-                        break;
-                    }
-                } while (true);
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                } else {
+                    developerSpecialization = userInput;
+                    break;
+                }
+            }
 
-                if (!exit) {
+            while(!exit) {
+                System.out.println("Enter developer's experience or c to cancel:");
+                userInput = br.readLine().trim();
+
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                } else {
+                    developerExperience = Integer.parseInt(userInput);
+                    break;
+                }
+            }
+
+            while(!exit) {
+                System.out.println("Enter developer's salary or c to cancel:");
+                userInput = br.readLine().trim();
+
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                } else {
+                    developerSalary = Integer.parseInt(userInput);
+
                     Developer developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary);
                     developerController.create(developer);
+                    break;
+                }
+            }
+
+            while(!exit) {
+                System.out.println("Add skill to developer? y = yes, n = no:");
+                userInput = br.readLine().trim().toLowerCase();
+
+                while (!userInput.equals("y") && !userInput.equals("n")) {
+                    System.out.println("Add skill to developer? Enter y = yes or n = no:");
+                    userInput = br.readLine().trim().toLowerCase();
                 }
 
-                do {
-                    System.out.println("Add skill to developer? y = yes, n = no:");
+                if (userInput.equals("n")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                } else {
+                    System.out.println("There is list of skills:");
+                    System.out.println("------------------------");
+                    skillController.readAll();
+                    System.out.println();
+
+                    System.out.println("Enter ID of skill you're going to add:");
                     userInput = br.readLine().trim().toLowerCase();
-                    if (userInput.equals("n")) {
-                        returnToMainMenuBar();
-                        exit = true;
-                        break;
-                    } else {
-                        System.out.println("There is list of skills:");
-                        System.out.println("------------------------");
+                    System.out.println();
 
-                        try {
-                            Thread.currentThread().sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    developerSkillsDAO.insert(developerId, Integer.parseInt(userInput));
 
-                        skillController.readAll();
+                    System.out.println("Add another one skill? y = yes, n = no:");
+                    userInput = br.readLine().trim().toLowerCase();
 
-
-                        do {
-                            System.out.println("Enter ID of skill you're going to add:");
-                            userInput = br.readLine().trim().toLowerCase();
-
-                            try {
-                                Class.forName(JavaIODeveloperDAOImpl.JDBC_DRIVER);
-                                Connection connection = DriverManager.getConnection(JavaIODeveloperDAOImpl.URL_DATABASE, JavaIODeveloperDAOImpl.USERNAME, JavaIODeveloperDAOImpl.PASSWORD);
-                                PreparedStatement prepStatReadSkills = connection.prepareStatement(JavaIOSkillDAOImpl.SHOW_SKILL);
-                                prepStatReadSkills.setInt(1, Integer.parseInt(userInput));
-                                ResultSet resultSet = prepStatReadSkills.executeQuery();
-
-                                while(resultSet.next()) {
-                                    int skillId = resultSet.getInt("id");
-
-                                    if (skillId == Integer.parseInt(userInput)) {
-                                        String skillName = resultSet.getString("name");
-
-                                        skill = new Skill(skillId, skillName);
-                                        skills.add(skill);
-                                    }
-                                }
-
-                                PreparedStatement preparedStatement = connection.prepareStatement(INSERT_NEW_DEVELOPER_SKILLS);
-                                preparedStatement.setInt(1, developerId);
-                                preparedStatement.setInt(2, Integer.parseInt(userInput));
-
-                                preparedStatement.executeUpdate();
-
-                                resultSet.close();
-                                prepStatReadSkills.close();
-                                connection.close();
-                            } catch (ClassNotFoundException | SQLException e) {
-                                e.printStackTrace();
-                            }
-
-                            System.out.println("Add another one skill? y = yes, n = no:");
-                            userInput = br.readLine().trim().toLowerCase();
-                            if(userInput.equals("n")) {
-                                returnToMainMenuBar();
-                                exit = true;
-                                break;
-                            }
-                        } while(!exit);
+                    if(userInput.equals("n")) {
                         break;
                     }
-                } while (true);
+                }
+            }
 
-                do {
+                while(!exit) {
                     System.out.println("Add project to developer? y = yes, n = no:");
                     userInput = br.readLine().trim().toLowerCase();
+
+                    while (!userInput.equals("y") && !userInput.equals("n")) {
+                        System.out.println("Add project to developer? Enter y = yes or n = no:");
+                        userInput = br.readLine().trim().toLowerCase();
+                    }
+
                     if (userInput.equals("n")) {
-                        Developer developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary, skills);
-                        developerController.update(developer);
-                        System.out.println("Developer updated");
-                        exit = true;
                         returnToMainMenuBar();
-                        break;
+                        exit = true;
                     } else {
                         System.out.println("There is list of projects:");
                         System.out.println("--------------------------");
-
-                        try {
-                            Thread.currentThread().sleep(1500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
                         projectController.readAll();
+                        System.out.println();
 
 
-                        do {
-                            System.out.println("Enter ID of project you're going to add:");
-                            userInput = br.readLine().trim().toLowerCase();
+                        System.out.println("Enter ID of project you're going to add:");
+                        userInput = br.readLine().trim().toLowerCase();
+                        System.out.println();
 
-                            try {
-                                Class.forName(DBConnectionDAO.JDBC_DRIVER);
-                                Connection connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-                                PreparedStatement prepStatReadProjects = connection.prepareStatement(JavaIOProjectDAOImpl.SHOW_PROJECT);
-                                prepStatReadProjects.setInt(1, Integer.parseInt(userInput));
-                                ResultSet resultSet = prepStatReadProjects.executeQuery();
+                        projectsDeveloperDAO.insert(developerId, Integer.parseInt(userInput));
 
-                                while(resultSet.next()) {
-                                    int projectId = resultSet.getInt("id");
+                        System.out.println("Add another one project? y = yes, n = no:");
+                        userInput = br.readLine().trim().toLowerCase();
 
-                                    if (projectId == Integer.parseInt(userInput)) {
-                                        String projectName = resultSet.getString("name");
-                                        String projectVersion = resultSet.getString("version");
-                                        Integer projectCost = resultSet.getInt("cost");
-
-                                        project = new Project(projectId, projectName, projectVersion, projectCost);
-                                        projects.add(project);
-                                    }
-                                }
-
-                                Developer developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary, skills, projects);
-                                developerController.update(developer);
-                                System.out.println("Developer updated");
-
-                                PreparedStatement preparedStatement = connection.prepareStatement(INSERT_NEW_PROJECTS_DEVELOPERS);
-                                preparedStatement.setInt(1, Integer.parseInt(userInput));
-                                preparedStatement.setInt(2, developerId);
-
-
-
-
-                                preparedStatement.executeUpdate();
-
-                                resultSet.close();
-                                prepStatReadProjects.close();
-                                connection.close();
-
-
-                            } catch (ClassNotFoundException | SQLException e) {
-                                e.printStackTrace();
-                            }
-
-                            System.out.println("Add another one project? y = yes, n = no:");
-                            userInput = br.readLine().trim().toLowerCase();
-                            if(userInput.equals("n")) {
-                                exit = true;
-                                skills.clear();
-                                skill = null;
-                                projects.clear();
-                                project = null;
-                                returnToMainMenuBar();
-                                break;
-                            }
-                        } while(!exit);
-                        break;
+                        if(userInput.equals("n")) {
+                            returnToMainMenuBar();
+                            exit = true;
+                        }
                     }
-                } while (true);
-
-            } while (!exit);
+                }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -315,7 +206,29 @@ public class DeveloperView {
     }
 
     public void showAllDevelopers() {
+        boolean exit = false;
+
         developerController.readAll();
+        System.out.println();
+
+        try {
+            while(!exit) {
+                System.out.println("Enter c to back to main menu:");
+                userInput = br.readLine().trim().toLowerCase();
+
+                while(!userInput.equals("c")) {
+                    System.out.println("Enter c to back to main menu:");
+                    userInput = br.readLine().trim().toLowerCase();
+                }
+
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateDeveloper() {

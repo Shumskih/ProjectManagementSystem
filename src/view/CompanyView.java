@@ -2,31 +2,22 @@ package view;
 
 import controller.CompanyController;
 import controller.ProjectController;
-import controller.SkillController;
 import dao.*;
 import model.Company;
-import model.Project;
-import model.Skill;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class CompanyView {
     private CompanyController companyController = new CompanyController();
     private ProjectController projectController = new ProjectController();
-    CompaniesProjectsDAO companiesProjectsDAO = new CompaniesProjectsDAO();
+    private CompaniesProjectsDAO companiesProjectsDAO = new CompaniesProjectsDAO();
 
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     private Integer companyId;
     private String companyName;
-
-    private Project project;
-    private Set<Project> projects = new LinkedHashSet<>();
 
     private String userInput;
 
@@ -83,6 +74,7 @@ public class CompanyView {
 
                         System.out.println("Enter ID of project you're going to add:");
                         userInput = br.readLine().trim().toLowerCase();
+                        System.out.println();
 
                         companiesProjectsDAO.insert(companyId, Integer.parseInt(userInput));
 
