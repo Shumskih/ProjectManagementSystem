@@ -152,8 +152,8 @@ public class CompanyView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 if (userInput.equals("c")) {
-                    exit = true;
                     returnToMainMenuBar();
+                    exit = true;
                 } else {
                     id = Integer.parseInt(userInput);
 

@@ -205,6 +205,129 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         }
     }
 
+    public void readListOfProjects(int developerID) {
+        Connection connection = null;
+        PreparedStatement psProjectsDevelopers = null;
+        PreparedStatement psProjects = null;
+
+        Project project;
+        Set<Project> projects = new LinkedHashSet<>();
+
+        try {
+            Class.forName(DBConnectionDAO.JDBC_DRIVER);
+            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            psProjectsDevelopers = connection.prepareStatement(DBConnectionDAO.SHOW_PROJECTS_DEVELOPERS);
+            psProjectsDevelopers.setInt(1, developerID);
+            ResultSet rsProjectsDevelopers = psProjectsDevelopers.executeQuery();
+
+            while (rsProjectsDevelopers.next()) {
+                Integer projectId = rsProjectsDevelopers.getInt("project_id");
+                Integer developerId = rsProjectsDevelopers.getInt("developer_id");
+
+                if (developerId == developerID) {
+                    psProjects = connection.prepareStatement(JavaIOProjectDAOImpl.SHOW_PROJECT);
+                    psProjects.setInt(1, projectId);
+                    ResultSet rsProjects = psProjects.executeQuery();
+
+                    while (rsProjects.next()) {
+                        Integer projectID = rsProjects.getInt("id");
+
+                        if (projectID == projectId) {
+                            String projectName = rsProjects.getString("name");
+                            String projectVersion =rsProjects.getString("version");
+                            Integer projectCost = rsProjects.getInt("cost");
+
+                            project = new Project(projectID, projectName, projectVersion, projectCost);
+                            projects.add(project);
+                        }
+                    }
+                }
+            }
+            if (projects.isEmpty()) {
+                System.out.println("Developer hasn't projects");
+            } else {
+                for (Project p : projects) {
+                    System.out.println("ID: " + p.getId());
+                    System.out.println("Name: " + p.getName());
+                    System.out.println("===============");
+                }
+            }
+            rsProjectsDevelopers.close();
+            projects.clear();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                psProjectsDevelopers.close();
+                psProjects.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void readListOfSkills(int developerID) {
+        Connection connection = null;
+        PreparedStatement psDevelopersSkills = null;
+        PreparedStatement psSkills = null;
+
+        Skill skill;
+        Set<Skill> skills = new LinkedHashSet<>();
+
+        try {
+            Class.forName(DBConnectionDAO.JDBC_DRIVER);
+            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            psDevelopersSkills = connection.prepareStatement(DBConnectionDAO.SHOW_DEVELOPER_SKILLS);
+            psDevelopersSkills.setInt(1, developerID);
+            ResultSet rsDevelopersSkills = psDevelopersSkills.executeQuery();
+
+            while (rsDevelopersSkills.next()) {
+                Integer developerId = rsDevelopersSkills.getInt("developer_id");
+                Integer skillId = rsDevelopersSkills.getInt("skill_id");
+
+                if (developerId == developerID) {
+                    psSkills = connection.prepareStatement(JavaIOSkillDAOImpl.SHOW_SKILL);
+                    psSkills.setInt(1, skillId);
+                    ResultSet rsSkills = psSkills.executeQuery();
+
+                    while (rsSkills.next()) {
+                        Integer skillID = rsSkills.getInt("id");
+
+                        if (skillID == skillId) {
+                            String skillName = rsSkills.getString("name");
+
+                            skill = new Skill(skillID, skillName);
+                            skills.add(skill);
+                        }
+                    }
+                    rsSkills.close();
+                }
+            }
+            if (skills.isEmpty()) {
+                System.out.println("Developer hasn't skills");
+            } else {
+                for (Skill s : skills) {
+                    System.out.println("ID: " + s.getId());
+                    System.out.println("Name: " + s.getName());
+                    System.out.println("===============");
+                }
+            }
+            rsDevelopersSkills.close();
+            skills.clear();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                psDevelopersSkills.close();
+                psSkills.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void readAll() {
         Connection connection = null;

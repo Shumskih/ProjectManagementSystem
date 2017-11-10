@@ -239,38 +239,49 @@ public class DeveloperView {
         Integer userInputDevExperience;
         Integer userInputDevSalary;
 
+        Integer id = null;
+
         try {
-            do {
+            while(!exit) {
                 System.out.println("Enter developer's ID you are going to update or c to cancel:");
                 userInput = br.readLine().trim().toLowerCase();
-                if(userInput.equals("c")) {
-                    break;
-                } else {
-                    Integer id = Integer.parseInt(userInput);
-                    System.out.println("There is a developer you are going to update:");
-                    System.out.println("---------------------------------------------");
-                    developerController.read(id);
 
-                    do {
+                if(userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                } else {
+                    id = Integer.parseInt(userInput);
+
+                    System.out.println("There is a developer you are going to update:");
+                    developerController.read(id);
+                    break;
+                }
+
+                    while(!exit) {
                         System.out.println("Change: ");
-                        System.out.println("1.     name?");
-                        System.out.println("2.     specialization?");
-                        System.out.println("3.     experience?");
-                        System.out.println("4.     salary?");
-                        System.out.println("5. Change all fields?");
-                        System.out.println("6. Cancel");
+                        System.out.println("    1.name?");
+                        System.out.println("    2.specialization?");
+                        System.out.println("    3.experience?");
+                        System.out.println("    4.salary?");
+                        System.out.println("    5.skills?");
+                        System.out.println("    6.projects?");
+                        System.out.println("    7.Change all fields?");
+                        System.out.println("8.Cancel");
 
                         userInput = br.readLine().trim().toLowerCase();
 
-                        if(userInput.equals("6")) {
-                            break;
+                        if(userInput.equals("8")) {
+                            returnToMainMenuBar();
+                            exit = true;
                         } else {
                             switch (userInput) {
                                 case "1":
                                     System.out.println("Enter new developer's name or c to cancel:");
                                     userInput = br.readLine().trim().toLowerCase();
+
                                     if(userInput.equals("c")) {
-                                        break;
+                                        returnToMainMenuBar();
+                                        exit = true;
                                     } else {
                                         userInputDevName = userInput;
 
@@ -281,8 +292,10 @@ public class DeveloperView {
                                 case "2":
                                     System.out.println("Enter new developer's specialization or c to cancel:");
                                     userInput = br.readLine().trim();
+
                                     if(userInput.equals("c")) {
-                                        break;
+                                        returnToMainMenuBar();
+                                        exit = true;
                                     } else {
                                         userInputDevSpecialization = userInput;
 
@@ -293,8 +306,10 @@ public class DeveloperView {
                                 case "3":
                                     System.out.println("Enter new developer's experience or c to cancel:");
                                     userInput = br.readLine().trim();
+
                                     if(userInput.equals("c")) {
-                                        break;
+                                        returnToMainMenuBar();
+                                        exit = true;
                                     } else {
                                         userInputDevExperience = Integer.parseInt(userInput);
 
@@ -305,8 +320,10 @@ public class DeveloperView {
                                 case "4":
                                     System.out.println("Enter new developer's salary or c to cancel:");
                                     userInput = br.readLine().trim();
+
                                     if(userInput.equals("c")) {
-                                        break;
+                                        returnToMainMenuBar();
+                                        exit = true;
                                     } else {
                                         userInputDevSalary = Integer.parseInt(userInput);
 
@@ -315,75 +332,143 @@ public class DeveloperView {
                                         break;
                                     }
                                 case "5":
-                                    do {
+                                    System.out.println("There is list of skills developer has:");
+                                    System.out.println("--------------------------------------");
+                                    developerController.readListOfSkills(id);
+
+                                    while(!exit) {
+                                        System.out.println("Delete skill or insert new? d = delete, i = insert new:");
+                                        userInput = br.readLine().trim().toLowerCase();
+
+                                        if (!userInput.equals("d") && !userInput.equals("i")) {
+                                            do {
+                                                System.out.println("Enter d to delete skill or i to insert new:");
+                                                userInput = br.readLine().trim().toLowerCase();
+                                            } while (!userInput.equals("d") && !userInput.equals("i"));
+
+                                        } else {
+                                            if (userInput.equals("d")) {
+                                                System.out.println("Enter ID of skill you're going to delete:");
+                                                userInput = br.readLine().trim().toLowerCase();
+                                                System.out.println();
+
+                                                developerSkillsDAO.deleteBySkill(Integer.parseInt(userInput));
+                                                returnToMainMenuBar();
+                                                exit = true;
+                                            } else {
+                                                System.out.println("There is list of projects:");
+                                                projectController.readAll();
+                                                System.out.println();
+
+                                                System.out.println("Enter ID of project you're going to add:");
+                                                userInput = br.readLine().trim().toLowerCase();
+                                                System.out.println();
+
+                                                developerSkillsDAO.insert(id, Integer.parseInt(userInput));
+                                                returnToMainMenuBar();
+                                                exit = true;
+                                            }
+                                        }
+                                    }
+                                case "6":
+                                    System.out.println("There is list of projects developer has:");
+                                    System.out.println("--------------------------------------");
+                                    developerController.readListOfProjects(id);
+
+                                    while(!exit) {
+                                        System.out.println("Delete project or insert new? d = delete, i = insert new:");
+                                        userInput = br.readLine().trim().toLowerCase();
+
+                                        if (!userInput.equals("d") && !userInput.equals("i")) {
+                                            do {
+                                                System.out.println("Enter d to delete project or i to insert new:");
+                                                userInput = br.readLine().trim().toLowerCase();
+                                            } while (!userInput.equals("d") && !userInput.equals("i"));
+
+                                        } else {
+                                            if (userInput.equals("d")) {
+                                                System.out.println("Enter ID of project you're going to delete:");
+                                                userInput = br.readLine().trim().toLowerCase();
+                                                System.out.println();
+
+                                                projectsDeveloperDAO.deleteByProject(Integer.parseInt(userInput));
+                                                returnToMainMenuBar();
+                                                exit = true;
+                                            } else {
+                                                System.out.println("There is list of projects:");
+                                                projectController.readAll();
+                                                System.out.println();
+
+                                                System.out.println("Enter ID of project you're going to add:");
+                                                userInput = br.readLine().trim().toLowerCase();
+                                                System.out.println();
+
+                                                projectsDeveloperDAO.insert(id, Integer.parseInt(userInput));
+                                                returnToMainMenuBar();
+                                                exit = true;
+                                            }
+                                        }
+                                    }
+                                case "7":
+                                    while(!exit) {
                                         System.out.println("Enter developer's name or c to cancel:");
                                         userInput = br.readLine().trim().toLowerCase();
+
                                         if (userInput.equals("c")) {
+                                            returnToMainMenuBar();
                                             exit = true;
-                                            break;
                                         } else {
                                             developerName = userInput;
                                             break;
                                         }
-                                    } while(true);
+                                    }
 
-                                    do {
-                                        if(!exit) {
-                                            System.out.println("Enter developer's specialization:");
-                                            userInput = br.readLine().trim().toLowerCase();
-                                            if(userInput.equals("c")) {
-                                                exit = true;
-                                                break;
-                                            } else {
-                                                developerSpecialization = userInput;
-                                                break;
-                                            }
+                                    while(!exit ){
+                                        System.out.println("Enter developer's specialization:");
+                                        userInput = br.readLine().trim().toLowerCase();
+
+                                        if(userInput.equals("c")) {
+                                            returnToMainMenuBar();
+                                            exit = true;
                                         } else {
+                                            developerSpecialization = userInput;
                                             break;
                                         }
-                                    } while(true);
+                                    }
 
-                                    do {
-                                        if(!exit) {
-                                            System.out.println("Enter developer's experience:");
-                                            userInput = br.readLine().trim().toLowerCase();
-                                            if(userInput.equals("c")) {
-                                                exit = true;
-                                                break;
-                                            } else {
-                                                developerExperience = Integer.parseInt(userInput);
-                                                break;
-                                            }
+                                    while(!exit) {
+                                        System.out.println("Enter developer's experience:");
+                                        userInput = br.readLine().trim().toLowerCase();
+
+                                        if(userInput.equals("c")) {
+                                            returnToMainMenuBar();
+                                            exit = true;
                                         } else {
+                                            developerExperience = Integer.parseInt(userInput);
                                             break;
                                         }
-                                    } while(true);
+                                    }
 
-                                    do {
-                                        if(!exit) {
-                                            System.out.println("Enter developer's salary:");
-                                            userInput = br.readLine().trim().toLowerCase();
-                                            if(userInput.equals("c")) {
-                                                break;
-                                            } else {
-                                                developerSalary = Integer.parseInt(userInput);
-                                                break;
-                                            }
+                                    while(!exit) {
+                                        System.out.println("Enter developer's salary:");
+                                        userInput = br.readLine().trim().toLowerCase();
+
+                                        if(userInput.equals("c")) {
+                                            returnToMainMenuBar();
+                                            exit = true;
                                         } else {
+                                            developerSalary = Integer.parseInt(userInput);
                                             break;
                                         }
-                                    } while(true);
+                                    }
 
                                     Developer developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary);
                                     developerController.update(developer);
                                     break;
                             }
                         }
-                        break;
-                    }  while(!exit);
+                    }
                 }
-                break;
-            } while(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

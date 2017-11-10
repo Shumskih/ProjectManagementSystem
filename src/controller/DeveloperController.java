@@ -14,6 +14,14 @@ public class DeveloperController {
         javaIODeveloperDAOImpl.read(id);
     }
 
+    public void readListOfProjects(int developerId) {
+        javaIODeveloperDAOImpl.readListOfProjects(developerId);
+    }
+
+    public void readListOfSkills(int developerId) {
+        javaIODeveloperDAOImpl.readListOfSkills(developerId);
+    }
+
     public void readAll() { javaIODeveloperDAOImpl.readAll(); }
 
     public void update(Developer developer) {
