@@ -106,31 +106,7 @@ public class SkillView {
                } else {
                    Integer id = Integer.parseInt(userInput);
                    System.out.println("This is a skill you're going to update:");
-                   System.out.println("---------------------------------------");
-                   try {
-                       Class.forName(JavaIODeveloperDAOImpl.JDBC_DRIVER);
-                       Connection connection = DriverManager.getConnection(JavaIOSkillDAOImpl.URL_DATABASE, JavaIOSkillDAOImpl.USERNAME, JavaIOSkillDAOImpl.PASSWORD);
-                       PreparedStatement preparedStatement = connection.prepareStatement(JavaIOSkillDAOImpl.SHOW_SKILL);
-                       preparedStatement.setInt(1, id);
-                       ResultSet resultSet = preparedStatement.executeQuery();
-
-                       while(resultSet.next()) {
-                           skillId = resultSet.getInt("id");
-
-                           if(skillId == id) {
-                               skillName = resultSet.getString("name");
-
-                               System.out.println("ID: " + skillId + "\n" +
-                                       "Name: " + skillName);
-                               System.out.println("=================================");
-                           }
-                       }
-                   } catch (ClassNotFoundException e) {
-                       System.out.println("JDBC driver not found");
-                       e.printStackTrace();
-                   } catch (SQLException e) {
-                       e.printStackTrace();
-                   }
+                   skillController.read(id);
                }
                break;
            } while(true);

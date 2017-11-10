@@ -104,14 +104,16 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
                         }
                     }
 
-                    System.out.println("==============");
+                    System.out.println();
+                    System.out.println("====================");
                     System.out.println("ID: " + companyId + "\n" +
                                         "Name: " + name + "\n" +
                                         "Projects: ");
                     for(Project p:projects) {
                         System.out.println("------" + p.getName());
                     }
-                    System.out.println("==============");
+                    System.out.println("====================");
+                    System.out.println();
                 }
             }
         } catch (ClassNotFoundException e) {

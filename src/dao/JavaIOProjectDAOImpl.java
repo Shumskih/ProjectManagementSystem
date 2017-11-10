@@ -86,10 +86,14 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
                     String version = resultSet.getString("version");
                     Integer cost = resultSet.getInt("cost");
 
+                    System.out.println();
+                    System.out.println("====================");
                     System.out.println("ID: " + projectId + "\n" +
                             "Name: " + name + "\n" +
                             "Version: " + version + "\n" +
                             "Cost: " + cost);
+                    System.out.println("====================");
+                    System.out.println();
                 }
             }
 

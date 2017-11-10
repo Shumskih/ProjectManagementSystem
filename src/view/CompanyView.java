@@ -173,42 +173,14 @@ public class CompanyView {
                 returnToMainMenuBar();
             } else {
                 id = Integer.parseInt(userInput);
-                System.out.println("This is a company you're going to update:");
-                System.out.println("---------------------------------------");
-                try {
-                    Class.forName(DBConnectionDAO.JDBC_DRIVER);
-                    connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-                    preparedStatement = connection.prepareStatement(JavaIOCompanyDAOImpl.SHOW_COMPANY);
-                    preparedStatement.setInt(1, id);
-                    ResultSet resultSet = preparedStatement.executeQuery();
-
-                    while (resultSet.next()) {
-                        companyId = resultSet.getInt("id");
-
-                        if (companyId == id) {
-                            companyName = resultSet.getString("name");
-
-                            System.out.println("ID: " + companyId + "\n" +
-                                            "Name: " + companyName);
-                            System.out.println("=================================");
-                        }
-                    }
-                    resultSet.close();
-                    preparedStatement.close();
-                    connection.close();
-                } catch (ClassNotFoundException e) {
-                    System.out.println("JDBC driver not found");
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                companyController.read(id);
             }
 
             do {
                 System.out.println("Change name? y = yes, n = no:");
                 userInput = br.readLine().trim().toLowerCase();
                 if (userInput.equals("n")) {
-                    break;
+                    exit = true;
                 } else {
                     System.out.println("Enter new company name:");
                     userInputCompanyName = br.readLine().trim();

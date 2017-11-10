@@ -14,6 +14,10 @@ public class CustomerController {
         javaIOCustomerDAOImpl.read(id);
     }
 
+    public void readListOfProjects(int customerId) {
+        javaIOCustomerDAOImpl.readListOfProjects(customerId);
+    }
+
     public void readAll() {
         javaIOCustomerDAOImpl.readAll();
     }

@@ -181,16 +181,11 @@ public class DeveloperView {
                                 preparedStatement.setInt(1, developerId);
                                 preparedStatement.setInt(2, Integer.parseInt(userInput));
 
-
-
-
                                 preparedStatement.executeUpdate();
 
                                 resultSet.close();
                                 prepStatReadSkills.close();
                                 connection.close();
-
-
                             } catch (ClassNotFoundException | SQLException e) {
                                 e.printStackTrace();
                             }
@@ -343,38 +338,7 @@ public class DeveloperView {
                     Integer id = Integer.parseInt(userInput);
                     System.out.println("There is a developer you are going to update:");
                     System.out.println("---------------------------------------------");
-                    try {
-
-                        Class.forName(JavaIODeveloperDAOImpl.JDBC_DRIVER);
-                        Connection connection = DriverManager.getConnection(JavaIODeveloperDAOImpl.URL_DATABASE, JavaIODeveloperDAOImpl.USERNAME, JavaIODeveloperDAOImpl.PASSWORD);
-                        PreparedStatement preparedStatement = connection.prepareStatement(JavaIODeveloperDAOImpl.SHOW_DEVELOPER);
-                        preparedStatement.setInt(1, id);
-                        ResultSet resultSet = preparedStatement.executeQuery();
-
-                        while(resultSet.next()) {
-                            developerId = resultSet.getInt("id");
-
-                            if(developerId == id) {
-                                developerName = resultSet.getString("name");
-                                developerSpecialization = resultSet.getString("specialization");
-                                developerExperience = resultSet.getInt("experience");
-                                developerSalary = resultSet.getInt("salary");
-
-                                System.out.println("ID: " + developerId + "\n" +
-                                                    "Name: " + developerName + "\n" +
-                                                    "Specialization: " + developerSpecialization + "\n" +
-                                                    "Experience: " + developerExperience + "\n" +
-                                                    "Salary: " + developerSalary + "$");
-                                System.out.println("=================================");
-                            }
-                        }
-
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("JDBC driver not found");
-                        e.printStackTrace();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    developerController.read(id);
 
                     do {
                         System.out.println("Change: ");

@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class JavaIOCustomerDAOImpl implements CustomerDAO {
+    CustomersProjectsDAO customersProjectsDAO = new CustomersProjectsDAO();
 
     public static final String JDBC_DRIVER = "org.postgresql.Driver";
     public static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
@@ -122,7 +123,8 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
                     RSCustomersProjects.close();
                     PSReadCustomersProjects.close();
                 }
-                System.out.println("==========");
+                System.out.println();
+                System.out.println("====================");
                 System.out.println("ID: " + customerId + "\n" +
                                     "Name: " + customerName);
                 if(projects.isEmpty()) {
@@ -133,6 +135,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
                         System.out.println("---------" + p.getName());
                     }
                  }
+                System.out.println("====================");
                 System.out.println();
                  projects.clear();
             }
@@ -155,6 +158,59 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
                 System.out.println("------------------------");
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void readListOfProjects(int customerID) {
+        Connection connection;
+        PreparedStatement preparedStatement;
+        PreparedStatement psCustomersProjects;
+        PreparedStatement psProjects;
+
+        try {
+            Class.forName(DBConnectionDAO.JDBC_DRIVER);
+            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            psCustomersProjects = connection.prepareStatement(DBConnectionDAO.SHOW_CUSTOMERS_PROJECTS);
+            psCustomersProjects.setInt(1, customerID);
+            ResultSet rsCustomersProjects = psCustomersProjects.executeQuery();
+
+            while (rsCustomersProjects.next()) {
+                Integer customerId = rsCustomersProjects.getInt("customer_id");
+                Integer projectId = rsCustomersProjects.getInt("project_id");
+
+                if (customerId == customerID) {
+                    psProjects = connection.prepareStatement(JavaIOProjectDAOImpl.SHOW_PROJECT);
+                    psProjects.setInt(1, projectId);
+                    ResultSet rsProjects = psProjects.executeQuery();
+
+                    while (rsProjects.next()) {
+                        Integer projectID = rsProjects.getInt("id");
+
+                        if (projectID == projectId) {
+                            String projectName = rsProjects.getString("name");
+                            String projectVersion = rsProjects.getString("version");
+                            Integer projectCost = rsProjects.getInt("cost");
+
+                            project = new Project(projectID, projectName, projectVersion, projectCost);
+                            projects.add(project);
+                        }
+                    }
+                }
+            }
+            System.out.println();
+            System.out.println("====================");
+            if (projects.isEmpty()) {
+                System.out.println("Customer hasn't projects");
+            } else {
+                for (Project p : projects) {
+                    System.out.println("ID: " + p.getId());
+                    System.out.println("Name: " + p.getName());
+                }
+            }
+            System.out.println("====================");
+            System.out.println();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -290,15 +346,14 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
             Class.forName(JDBC_DRIVER);
             connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
             preparedStatement = connection.prepareStatement(DELETE_CUSTOMER);
+
             preparedStatement.setInt(1, id);
 
-            PreparedStatement PSDeleteCustomersProjects = connection.prepareStatement(DBConnectionDAO.DELETE_CUSTOMER_FROM_CUSTOMERS_PROJECTS);
-            PSDeleteCustomersProjects.setInt(1, id);
-
-            PSDeleteCustomersProjects.executeUpdate();
             preparedStatement.executeUpdate();
-
             System.out.println("Customer with id = " + id + " has deleted");
+            System.out.println();
+
+            customersProjectsDAO.deleteByCustomer(id);
 
         } catch (ClassNotFoundException e) {
             System.out.println("JDBC driver not found");

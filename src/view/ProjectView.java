@@ -148,37 +148,7 @@ public class ProjectView {
                 } else {
                     Integer id = Integer.parseInt(userInput);
                     System.out.println("There is a project you are going to update:");
-                    System.out.println("---------------------------------------------");
-                    try {
-
-                        Class.forName(JavaIOProjectDAOImpl.JDBC_DRIVER);
-                        Connection connection = DriverManager.getConnection(JavaIOProjectDAOImpl.URL_DATABASE, JavaIOProjectDAOImpl.USERNAME, JavaIOProjectDAOImpl.PASSWORD);
-                        PreparedStatement preparedStatement = connection.prepareStatement(JavaIOProjectDAOImpl.SHOW_PROJECT);
-                        preparedStatement.setInt(1, id);
-                        ResultSet resultSet = preparedStatement.executeQuery();
-
-                        while(resultSet.next()) {
-                            projectId = resultSet.getInt("id");
-
-                            if(projectId == id) {
-                                projectName = resultSet.getString("name");
-                                projectVersion = resultSet.getString("version");
-                                projectCost = resultSet.getInt("cost");
-
-                                System.out.println("ID: " + projectId + "\n" +
-                                        "Name: " + projectName + "\n" +
-                                        "Version: " + projectVersion + "\n" +
-                                        "Cost: " + projectCost + "\n");
-                                System.out.println("=================================");
-                            }
-                        }
-
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("JDBC driver not found");
-                        e.printStackTrace();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    projectController.read(id);
 
                     do {
                         System.out.println("Change: ");

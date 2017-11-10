@@ -78,8 +78,12 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
                 if (skillId == id) {
                     String name = resultSet.getString("name");
 
+                    System.out.println();
+                    System.out.println("==========");
                     System.out.println("ID: " + skillId + "\n" +
                             "Name: " + name);
+                    System.out.println("==========");
+                    System.out.println();
                 }
             }
 

@@ -161,6 +161,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
                         }
                     }
 
+                    System.out.println();
                     System.out.println("==============");
                     System.out.println("ID: " + developerId + "\n" +
                                         "Name: " + name + "\n" +
@@ -176,6 +177,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
                         System.out.println("-------" + p.getName());
                     }
                     System.out.println("==============");
+                    System.out.println();
                 }
 
             }
