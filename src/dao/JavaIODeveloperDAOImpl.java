@@ -205,6 +205,126 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         }
     }
 
+    public Developer readDeveloper(int developerId) {
+        Connection connection = null;
+        PreparedStatement psReadDeveloper = null;
+        PreparedStatement psReadDevelopersSkills = null;
+        PreparedStatement psReadProjectsDevelopers = null;
+        PreparedStatement psReadSkills = null;
+        PreparedStatement psReadProjects = null;
+
+        Integer id = null;
+        String name = null;
+        String specialization = null;
+        Integer experience = null;
+        Integer salary = null;
+
+        Skill skill;
+        Set<Skill> skills = new LinkedHashSet<>();
+
+        Project project;
+        Set<Project> projects = new LinkedHashSet<>();
+
+        try {
+            Class.forName(DBConnectionDAO.JDBC_DRIVER);
+            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            psReadDeveloper = connection.prepareStatement(SHOW_DEVELOPER);
+
+            psReadDeveloper.setInt(1, developerId);
+            ResultSet rsReadDeveloper = psReadDeveloper.executeQuery();
+
+            psReadDevelopersSkills = connection.prepareStatement(DBConnectionDAO.SHOW_DEVELOPER_SKILLS);
+            psReadDevelopersSkills.setInt(1, developerId);
+            ResultSet rsDevelopersSkills = psReadDevelopersSkills.executeQuery();
+
+            psReadProjectsDevelopers = connection.prepareStatement(DBConnectionDAO.SHOW_COMPANIES_PROJECTS);
+            psReadProjectsDevelopers.setInt(1, developerId);
+            ResultSet rsReadProjectsDevelopers = psReadProjectsDevelopers.executeQuery();
+
+            while(rsReadDeveloper.next()) {
+                id = rsReadDeveloper.getInt("id");
+                name = rsReadDeveloper.getString("name");
+                specialization = rsReadDeveloper.getString("specialization");
+                experience = rsReadDeveloper.getInt("experience");
+                salary = rsReadDeveloper.getInt("salary");
+
+                if(developerId == id) {
+                    while (rsDevelopersSkills.next()) {
+                        Integer devId = rsDevelopersSkills.getInt("developer_id");
+                        Integer skillId = rsDevelopersSkills.getInt("skill_id");
+
+                        psReadSkills = connection.prepareStatement(DBConnectionDAO.SHOW_SKILLS);
+                        psReadSkills.setInt(1, skillId);
+                        ResultSet rsReadSkills = psReadSkills.executeQuery();
+
+                        while(rsReadSkills.next()) {
+                            Integer skillID = rsReadSkills.getInt("id");
+
+                            if(skillID == skillId) {
+                                String skillName = rsReadSkills.getString("name");
+
+                                skill = new Skill(skillID, skillName);
+                                skills.add(skill);
+                            }
+
+                        }
+                        rsReadSkills.close();
+                    }
+
+                }
+
+                if(developerId == id) {
+                    while(rsReadProjectsDevelopers.next()) {
+                        Integer projectId = rsReadProjectsDevelopers.getInt("project_id");
+
+                        psReadProjects = connection.prepareStatement(DBConnectionDAO.SHOW_PROJECTS);
+                        psReadProjects.setInt(1, projectId);
+                        ResultSet rsReadProjects = psReadProjects.executeQuery();
+
+                        while(rsReadProjects.next()) {
+                            Integer projectID = rsReadProjects.getInt("id");
+
+                            if(projectId == projectID) {
+                                String projectName = rsReadProjects.getString("name");
+                                String projectVersion = rsReadProjects.getString("version");
+                                Integer projectCost = rsReadProjects.getInt("cost");
+
+                                project = new Project(projectID, projectName, projectVersion, projectCost);
+                                projects.add(project);
+                            }
+
+                        }
+                        rsReadProjects.close();
+                    }
+
+                }
+
+            }
+            rsReadDeveloper.close();
+            rsDevelopersSkills.close();
+            rsReadProjectsDevelopers.close();
+            skills.clear();
+            projects.clear();
+        } catch(ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                psReadProjects.close();
+                psReadSkills.close();
+                psReadDeveloper.close();
+                psReadDevelopersSkills.close();
+                psReadProjectsDevelopers.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Developer developer = new Developer(id, name, specialization, experience, salary);
+
+        return developer;
+    }
+
     public void readListOfProjects(int developerID) {
         Connection connection = null;
         PreparedStatement psProjectsDevelopers = null;
@@ -389,12 +509,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         Integer experience = developer.getExperience();
         Integer salary = developer.getSalary();
 
-        Skill skill;
-        Set<Skill> skills;
-
-        Project project;
-        Set<Project> projects;
-
         try {
 
             Class.forName(JDBC_DRIVER);
@@ -408,31 +522,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
 
             preparedStatement.executeUpdate();
 
-            skills = developer.getSkills();
-            for (Skill s:skills) {
-                prepStatConnectToSkills = connection.prepareStatement(JavaIOSkillDAOImpl.INSERT_NEW_SKILL);
-                prepStatConnectToSkills.setInt(1, id);
-                prepStatConnectToSkills.setInt(2, s.getId());
-            }
-
-            skills.clear();
-
-            projects = developer.getProjects();
-            try {
-                for (Project p : projects) {
-                    prepStatConnectToProjects = connection.prepareStatement(JavaIOProjectDAOImpl.INSERT_NEW_PROJECT);
-                    prepStatConnectToProjects.setInt(1, id);
-                    prepStatConnectToProjects.setInt(2, p.getId());
-                    prepStatConnectToProjects.setString(2, p.getVersion());
-                    prepStatConnectToProjects.setInt(2, p.getCost());
-                }
-            } catch (NullPointerException e) {
-                System.out.println();
-            }
-
-            projects.clear();
-
-            System.out.println("Developer changed.");
+            System.out.println("Developer has updated.");
 
 
         } catch (ClassNotFoundException e) {
@@ -446,7 +536,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
             try {
 
                 preparedStatement.close();
-                prepStatConnectToSkills.close();
                 connection.close();
 
             } catch (SQLException e) {

@@ -3,9 +3,7 @@ package view;
 import controller.DeveloperController;
 import controller.ProjectController;
 import controller.SkillController;
-import dao.DBConnectionDAO;
 import dao.DeveloperSkillsDAO;
-import dao.JavaIOProjectDAOImpl;
 import dao.ProjectsDeveloperDAO;
 import model.Developer;
 import model.Project;
@@ -14,7 +12,6 @@ import model.Skill;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -32,11 +29,6 @@ public class DeveloperView {
     private String developerSpecialization;
     private Integer developerExperience;
     private Integer developerSalary;
-
-    private Set<Skill> skills = new LinkedHashSet<>();
-    private Skill skill;
-    private Set<Project> projects = new LinkedHashSet<>();
-    private Project project;
 
     private String userInput;
 
@@ -113,20 +105,16 @@ public class DeveloperView {
             }
 
             while(!exit) {
-                System.out.println("Add skill to developer? y = yes, n = no:");
-                userInput = br.readLine().trim().toLowerCase();
-
                 while (!userInput.equals("y") && !userInput.equals("n")) {
                     System.out.println("Add skill to developer? Enter y = yes or n = no:");
                     userInput = br.readLine().trim().toLowerCase();
                 }
 
                 if (userInput.equals("n")) {
-                    returnToMainMenuBar();
-                    exit = true;
+                    userInput = "";
+                    break;
                 } else {
                     System.out.println("There is list of skills:");
-                    System.out.println("------------------------");
                     skillController.readAll();
                     System.out.println();
 
@@ -140,15 +128,13 @@ public class DeveloperView {
                     userInput = br.readLine().trim().toLowerCase();
 
                     if(userInput.equals("n")) {
+                        userInput = "";
                         break;
                     }
                 }
             }
 
                 while(!exit) {
-                    System.out.println("Add project to developer? y = yes, n = no:");
-                    userInput = br.readLine().trim().toLowerCase();
-
                     while (!userInput.equals("y") && !userInput.equals("n")) {
                         System.out.println("Add project to developer? Enter y = yes or n = no:");
                         userInput = br.readLine().trim().toLowerCase();
@@ -234,6 +220,16 @@ public class DeveloperView {
     public void updateDeveloper() {
         boolean exit = false;
 
+        Integer devId = null;
+        String name = null;
+        String specialization = null;
+        Integer experience = null;
+        Integer salary = null;
+        Set<Skill> skills = new LinkedHashSet<>();
+        Set<Project> projects = new LinkedHashSet<>();
+
+        Developer developer = null;
+
         String userInputDevName;
         String userInputDevSpecialization;
         Integer userInputDevExperience;
@@ -251,10 +247,25 @@ public class DeveloperView {
                     exit = true;
                 } else {
                     id = Integer.parseInt(userInput);
+                    developerId = id;
 
                     System.out.println("There is a developer you are going to update:");
                     developerController.read(id);
-                    break;
+                    developer = developerController.readDeveloper(id);
+
+                    devId = developer.getId();
+                    name = developer.getName();
+                    specialization = developer.getSpecialization();
+                    experience = developer.getExperience();
+                    salary = developer.getSalary();
+                    skills = developer.getSkills();
+                    projects = developer.getProjects();
+
+                    System.out.println(devId + "\n" +
+                                        name + "\n" +
+                                        specialization + "\n" +
+                                        experience + "\n" +
+                                        salary);
                 }
 
                     while(!exit) {
@@ -285,7 +296,7 @@ public class DeveloperView {
                                     } else {
                                         userInputDevName = userInput;
 
-                                        Developer developer = new Developer(developerId, userInputDevName, developerSpecialization, developerExperience, developerSalary);
+                                        developer = new Developer(devId, userInputDevName, specialization, experience, salary, skills, projects);
                                         developerController.update(developer);
                                         break;
                                     }
@@ -299,7 +310,7 @@ public class DeveloperView {
                                     } else {
                                         userInputDevSpecialization = userInput;
 
-                                        Developer developer = new Developer(developerId, developerName, userInputDevSpecialization, developerExperience, developerSalary);
+                                        developer = new Developer(devId, name, userInputDevSpecialization, experience, salary);
                                         developerController.update(developer);
                                         break;
                                     }
@@ -313,7 +324,7 @@ public class DeveloperView {
                                     } else {
                                         userInputDevExperience = Integer.parseInt(userInput);
 
-                                        Developer developer = new Developer(developerId, developerName, developerSpecialization, userInputDevExperience, developerSalary);
+                                        developer = new Developer(devId, name, specialization, userInputDevExperience, salary);
                                         developerController.update(developer);
                                         break;
                                     }
@@ -327,7 +338,7 @@ public class DeveloperView {
                                     } else {
                                         userInputDevSalary = Integer.parseInt(userInput);
 
-                                        Developer developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, userInputDevSalary);
+                                       developer = new Developer(devId, name, specialization, experience, userInputDevSalary);
                                         developerController.update(developer);
                                         break;
                                     }
@@ -462,7 +473,7 @@ public class DeveloperView {
                                         }
                                     }
 
-                                    Developer developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary);
+                                    developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary);
                                     developerController.update(developer);
                                     break;
                             }

@@ -16,6 +16,8 @@ public class DBConnectionDAO {
     public static final String SHOW_PROJECTS_DEVELOPERS = "SELECT * FROM projects_developers WHERE developer_id=?";
     public static final String SHOW_COMPANIES_PROJECTS = "SELECT * FROM companies_projects WHERE company_id=?";
     public static final String SHOW_CUSTOMERS_PROJECTS = "SELECT * FROM customers_projects WHERE customer_id=?";
+    public static final String SHOW_SKILLS = "SELECT * FROM skills WHERE id=?";
+    public static final String SHOW_PROJECTS = "SELECT * FROM projects WHERE id=?";
 
     public static final String DELETE_COMPANIES_PROJECTS = "DELETE FROM companies_projects WHERE project_id=?";
     public static final String DELETE_CUSTOMERS_PROJECTS = "DELETE FROM customers_projects WHERE project_id=?";

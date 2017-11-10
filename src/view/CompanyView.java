@@ -189,7 +189,6 @@ public class CompanyView {
                 returnToMainMenuBar();
             } else {
                 System.out.println("There is list of projects company has:");
-                System.out.println("--------------------------------------");
                 companiesProjectsDAO.readListOfProjects(id);
             }
 
