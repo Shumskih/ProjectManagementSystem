@@ -5,10 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnectionDAOImpl implements DBConnectionDAO  {
-    public static final String JDBC_DRIVER = "org.postgresql.Driver";
-    public static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
-    public static final String USERNAME = "postgres";
-    public static final String PASSWORD = "Unow6457773";
+    private static final String JDBC_DRIVER = "org.postgresql.Driver";
+    private static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
+    private static final String USERNAME = "postgres";
+    private static final String PASSWORD = "Unow6457773";
 
     public static final String INSERT_NEW_DEVELOPER_SKILLS = "INSERT INTO developers_skills VALUES(?,?)";
     public static final String INSERT_NEW_COMPANIES_PROJECTS = "INSERT INTO companies_projects VALUES(?,?)";

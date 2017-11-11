@@ -163,9 +163,11 @@ public class CompanyView {
                 }
             }
 
-            while(true) {
-                System.out.println("Change name? y = yes, n = no:");
-                userInput = br.readLine().trim().toLowerCase();
+            while(!exit) {
+                do {
+                    System.out.println("Change name? y = yes, n = no:");
+                    userInput = br.readLine().trim().toLowerCase();
+                } while(!userInput.equals("y") & !userInput.equals("n"));
 
                 if (userInput.equals("n")) {
                     break;
@@ -179,17 +181,19 @@ public class CompanyView {
                 }
             }
 
-            do {
-                System.out.println("Change projects? y = yes, n = no:");
-                userInput = br.readLine().trim().toLowerCase();
-            } while(!userInput.equals("y") & !userInput.equals("n"));
+            while(!exit) {
+                do {
+                    System.out.println("Change projects? y = yes, n = no:");
+                    userInput = br.readLine().trim().toLowerCase();
+                } while (!userInput.equals("y") & !userInput.equals("n"));
 
-            if (userInput.equals("n")) {
-                exit = true;
-                returnToMainMenuBar();
-            } else {
-                System.out.println("There is list of projects company has:");
-                companiesProjectsDAO.readListOfProjects(id);
+                if (userInput.equals("n")) {
+                    exit = true;
+                    returnToMainMenuBar();
+                } else {
+                    System.out.println("There is list of projects company has:");
+                    companiesProjectsDAO.readListOfProjects(id);
+                }
             }
 
             while(!exit) {
