@@ -37,8 +37,12 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
         } finally {
 
             try {
-                preparedStatement.close();
-                connection.close();
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 System.out.println("Can't close connection: ");
                 System.out.println("------------------------");
@@ -53,12 +57,13 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
     public void read(int id) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_SKILL);
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
                 int skillId = resultSet.getInt("id");
@@ -74,16 +79,21 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
                     System.out.println();
                 }
             }
-
-            resultSet.close();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-                connection.close();
+                if(resultSet != null) {
+                    resultSet.close();
+                }
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 System.out.println("Can't close connection: ");
                 System.out.println("------------------------");
@@ -97,11 +107,12 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
     public void readAll() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_ALL_SKILLS);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
                 Integer id = resultSet.getInt("id");
@@ -111,17 +122,21 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
                 System.out.println("ID: " + id + "\n" +
                         "Name: " + name);
             }
-
-            resultSet.close();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
             e.printStackTrace();
         } finally {
             try {
-
-                preparedStatement.close();
-                connection.close();
+                if(resultSet != null) {
+                    resultSet.close();
+                }
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
 
             } catch (SQLException e) {
                 System.out.println("Can't close connection: ");
@@ -154,8 +169,12 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-                connection.close();
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -180,8 +199,12 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-                connection.close();
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }

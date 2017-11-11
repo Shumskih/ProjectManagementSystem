@@ -32,37 +32,34 @@ public class DBConnectionDAOImpl implements DBConnectionDAO  {
 
     public static final String SELECT_CUSTOMERS_FROM_CUSTOMERS_PROJECTS = "SELECT * FROM customers_projects WHERE customer_id=?";
 
+    DBConnectionDAOImpl(){
+        try {
+            Class.forName(JDBC_DRIVER);
+        } catch(ClassNotFoundException e) {
+            System.out.println("JDBC driver not found");
+        }
+    }
+
     public Connection getDBConnection() {
         Connection connection = null;
 
         try {
-            Class.forName(JDBC_DRIVER);
             connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
         } catch (SQLException e) {
             System.out.println("Database connection error");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
             e.printStackTrace();
         }
 
         return connection;
     }
 
-    public Connection getDBConnection(String dbUrl, String dbUsername, String dbPassword) {
-        Connection connection = null;
-
+    public void putConnection(Connection connection) {
         try {
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-        } catch (SQLException e) {
-            System.out.println("Ошибка соединения с базой данных");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
+            connection.close();
+        } catch(SQLException e) {
+            System.out.println("Close connection error");
             e.printStackTrace();
         }
 
-        return connection;
     }
 }

@@ -39,10 +39,13 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
             System.out.println("----------------");
             e.printStackTrace();
         } finally {
-
             try {
-                preparedStatement.close();
-                connection.close();
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 System.out.println("Can't close connection: ");
                 System.out.println("------------------------");
@@ -57,12 +60,13 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
     public void read(int id) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_PROJECT);
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
                 int projectId = resultSet.getInt("id");
@@ -82,16 +86,21 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
                     System.out.println();
                 }
             }
-
-            resultSet.close();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-                connection.close();
+                if(resultSet != null) {
+                    resultSet.close();
+                }
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 System.out.println("Can't close connection: ");
                 System.out.println("------------------------");
@@ -105,11 +114,12 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
     public void readAll() {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_ALL_PROJECTS);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
                 Integer id = resultSet.getInt("id");
@@ -123,17 +133,21 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
                                     "Version: " + version + "\n" +
                                     "Cost: " + cost);
             }
-
-            resultSet.close();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
             e.printStackTrace();
         } finally {
             try {
-
-                preparedStatement.close();
-                connection.close();
+                if(resultSet != null) {
+                    resultSet.close();
+                }
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
 
             } catch (SQLException e) {
                 System.out.println("Can't close connection: ");
@@ -170,8 +184,12 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-                connection.close();
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -197,8 +215,12 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
-                connection.close();
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -22,8 +22,12 @@ public class ProjectsDeveloperDAO {
             e.printStackTrace();
         } finally {
             try {
-                psProjectsDevelopers.close();
-                connection.close();
+                if(psProjectsDevelopers != null) {
+                    psProjectsDevelopers.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
             } catch(SQLException e) {
                 e.printStackTrace();
             }
@@ -41,6 +45,17 @@ public class ProjectsDeveloperDAO {
             System.out.println("Project has deleted");
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if(psProjectsDevelopers != null) {
+                    psProjectsDevelopers.close();
+                }
+                if(connection != null) {
+                    dbConnectionDAO.putConnection(connection);
+                }
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
