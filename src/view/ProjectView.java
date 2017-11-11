@@ -122,8 +122,29 @@ public class ProjectView {
     }
 
     public void showAllProjects() {
+        boolean exit = false;
+
         projectController.readAll();
-        returnToMainMenuBar();
+        System.out.println();
+
+        try {
+            while(!exit) {
+                System.out.println("Enter c to back to main menu:");
+                userInput = br.readLine().trim().toLowerCase();
+
+                while(!userInput.equals("c")) {
+                    System.out.println("Enter c to back to main menu:");
+                    userInput = br.readLine().trim().toLowerCase();
+                }
+
+                if (userInput.equals("c")) {
+                    returnToMainMenuBar();
+                    exit = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateProject() {
@@ -266,25 +287,28 @@ public class ProjectView {
     }
 
     public void deleteProject() {
+        boolean exit = false;
+
         try {
-            do {
+            while(!exit) {
                 System.out.println("Enter ID of project you are going to delete or c to cancel:");
                 userInput = br.readLine().trim().toLowerCase();
-                if(!userInput.equals("c")) {
+
+                if (!userInput.equals("c")) {
                     projectController.delete(Integer.parseInt(userInput));
                     returnToMainMenuBar();
                     break;
                 } else {
                     returnToMainMenuBar();
-                    break;
+                    exit = true;
                 }
-            } while(true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void returnToMainMenuBar() {
+    private void returnToMainMenuBar() {
         try {
             System.out.println();
             System.out.print("Returning to main menu.");

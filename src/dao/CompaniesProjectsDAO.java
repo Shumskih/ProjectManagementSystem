@@ -7,6 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class CompaniesProjectsDAO {
+    DBConnectionDAOImpl dbConnectionDAO = new DBConnectionDAOImpl();
+
     private Connection connection = null;
     private PreparedStatement prepStatProjects = null;
     private PreparedStatement PSCompaniesProjects = null;
@@ -17,25 +19,23 @@ public class CompaniesProjectsDAO {
 
     public void insert(int companyId, int projectId) {
         try {
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-            PSCompaniesProjects = connection.prepareStatement(DBConnectionDAO.INSERT_NEW_COMPANIES_PROJECTS);
+            connection = dbConnectionDAO.getDBConnection();
+            PSCompaniesProjects = connection.prepareStatement(DBConnectionDAOImpl.INSERT_NEW_COMPANIES_PROJECTS);
 
             PSCompaniesProjects.setInt(1, companyId);
             PSCompaniesProjects.setInt(2, projectId);
 
             PSCompaniesProjects.executeUpdate();
             System.out.println("Project has added");
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void readListOfProjects(int companyID) {
         try {
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-            PSCompaniesProjects = connection.prepareStatement(DBConnectionDAO.SHOW_COMPANIES_PROJECTS);
+            connection = dbConnectionDAO.getDBConnection();
+            PSCompaniesProjects = connection.prepareStatement(DBConnectionDAOImpl.SHOW_COMPANIES_PROJECTS);
             PSCompaniesProjects.setInt(1, companyID);
             ResultSet resSetCompaniesProjects = PSCompaniesProjects.executeQuery();
 
@@ -71,22 +71,21 @@ public class CompaniesProjectsDAO {
                     System.out.println("===============");
                 }
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void deleteByProject(int projectId) {
         try {
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-            PSCompaniesProjects = connection.prepareStatement(DBConnectionDAO.DELETE_COMPANIES_PROJECTS);
+            connection = dbConnectionDAO.getDBConnection();
+            PSCompaniesProjects = connection.prepareStatement(DBConnectionDAOImpl.DELETE_COMPANIES_PROJECTS);
 
             PSCompaniesProjects.setInt(1, projectId);
 
             PSCompaniesProjects.executeUpdate();
             System.out.println("Project has deleted");
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

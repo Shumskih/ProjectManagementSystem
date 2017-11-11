@@ -9,11 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class JavaIODeveloperDAOImpl implements DeveloperDAO {
-
-    public static final String JDBC_DRIVER = "org.postgresql.Driver";
-    public static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
-    public static final String USERNAME = "postgres";
-    public static final String PASSWORD = "Unow6457773";
+    private DBConnectionDAOImpl dbConnectionDAO = new DBConnectionDAOImpl();
 
     private static final String INSERT_NEW_DEVELOPER = "INSERT INTO developers VALUES(?,?,?,?,?)";
     public static final String SHOW_DEVELOPER = "SELECT * FROM developers WHERE id=?";
@@ -43,9 +39,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
 
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(INSERT_NEW_DEVELOPER);
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, name);
@@ -56,10 +50,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Developer has created.");
-
-        } catch (ClassNotFoundException e) {
-            System.out.print("Driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -87,16 +77,14 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         Set<Project> projects = new LinkedHashSet<>();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_DEVELOPER);
             preparedStatement.setInt(1, id);
 
-            prepStatReadDevelopersSkills = connection.prepareStatement(DBConnectionDAO.SHOW_DEVELOPER_SKILLS);
+            prepStatReadDevelopersSkills = connection.prepareStatement(DBConnectionDAOImpl.SHOW_DEVELOPER_SKILLS);
             prepStatReadDevelopersSkills.setInt(1, id);
 
-            prepStatReadProjects = connection.prepareStatement(DBConnectionDAO.SHOW_PROJECTS_DEVELOPERS);
+            prepStatReadProjects = connection.prepareStatement(DBConnectionDAOImpl.SHOW_PROJECTS_DEVELOPERS);
             prepStatReadProjects.setInt(1, id);
 
             ResultSet resultSetDeveloper = preparedStatement.executeQuery();
@@ -182,11 +170,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
 
             }
             resultSetDeveloper.close();
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("Driver not found: ");
-            System.out.println("------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -216,8 +199,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         Integer salary = null;
 
         try {
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             psReadDeveloper = connection.prepareStatement(SHOW_DEVELOPER);
 
             psReadDeveloper.setInt(1, developerId);
@@ -231,7 +213,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
                 salary = rsReadDeveloper.getInt("salary");
             }
             rsReadDeveloper.close();
-        } catch(ClassNotFoundException | SQLException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -256,9 +238,8 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         Set<Project> projects = new LinkedHashSet<>();
 
         try {
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-            psProjectsDevelopers = connection.prepareStatement(DBConnectionDAO.SHOW_PROJECTS_DEVELOPERS);
+            connection = dbConnectionDAO.getDBConnection();
+            psProjectsDevelopers = connection.prepareStatement(DBConnectionDAOImpl.SHOW_PROJECTS_DEVELOPERS);
             psProjectsDevelopers.setInt(1, developerID);
             ResultSet rsProjectsDevelopers = psProjectsDevelopers.executeQuery();
 
@@ -296,7 +277,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
             }
             rsProjectsDevelopers.close();
             projects.clear();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -318,9 +299,8 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         Set<Skill> skills = new LinkedHashSet<>();
 
         try {
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-            psDevelopersSkills = connection.prepareStatement(DBConnectionDAO.SHOW_DEVELOPER_SKILLS);
+            connection = dbConnectionDAO.getDBConnection();
+            psDevelopersSkills = connection.prepareStatement(DBConnectionDAOImpl.SHOW_DEVELOPER_SKILLS);
             psDevelopersSkills.setInt(1, developerID);
             ResultSet rsDevelopersSkills = psDevelopersSkills.executeQuery();
 
@@ -357,7 +337,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
             }
             rsDevelopersSkills.close();
             skills.clear();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -376,9 +356,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_ALL_DEVELOPERS);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -397,10 +375,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
                                     "Salary: " + salary);
             }
             resultSet.close();
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -422,8 +396,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
     public void update(Developer developer) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        PreparedStatement prepStatConnectToSkills = null;
-        PreparedStatement prepStatConnectToProjects = null;
 
         Integer id = developer.getId();
         String name = developer.getName();
@@ -432,9 +404,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         Integer salary = developer.getSalary();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(UPDATE_DEVELOPER);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, specialization);
@@ -445,11 +415,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Developer has updated.");
-
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -475,18 +440,12 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(DELETE_DEVELOPER);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
             System.out.println("Developer with id = " + id + " has deleted");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();

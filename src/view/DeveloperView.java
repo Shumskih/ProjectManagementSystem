@@ -486,26 +486,30 @@ public class DeveloperView {
     }
 
     public void deleteDeveloper() {
-        String userInput;
         boolean exit = false;
 
+        String userInput;
+
         try {
-            do {
+            while(!exit) {
                 System.out.println("Enter developer's ID you are going to delete or c to cancel:");
                 userInput = br.readLine().trim();
+
                 if(!userInput.equals("c")) {
                     developerController.delete(Integer.parseInt(userInput));
+                    returnToMainMenuBar();
                     break;
                 } else {
-                    break;
+                    returnToMainMenuBar();
+                    exit = true;
                 }
-            } while(true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void returnToMainMenuBar() {
+    private void returnToMainMenuBar() {
         try {
             System.out.print("Returning to main menu.");
             Thread.currentThread().sleep(300);

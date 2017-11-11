@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class JavaIOCompanyDAOImpl implements CompanyDAO{
+    private DBConnectionDAOImpl dbConnectionDAO = new DBConnectionDAOImpl();
 
     private static final String INSERT_NEW_COMPANY = "INSERT INTO companies VALUES(?,?)";
     public static final String SHOW_COMPANY = "SELECT * FROM companies WHERE id=?";
@@ -28,9 +29,7 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
         String name = company.getName();
 
         try {
-
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(INSERT_NEW_COMPANY);
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, name);
@@ -38,11 +37,6 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
             preparedStatement.executeUpdate();
 
             System.out.println("Company has created");
-
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -66,14 +60,12 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
         PreparedStatement prepStatReadProject = null;
 
         try {
-
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             prepStatShowCompany = connection.prepareStatement(SHOW_COMPANY);
             prepStatShowCompany.setInt(1, id);
             ResultSet resultSetCompany = prepStatShowCompany.executeQuery();
 
-            prepStatReadProject = connection.prepareStatement(DBConnectionDAO.SHOW_COMPANIES_PROJECTS);
+            prepStatReadProject = connection.prepareStatement(DBConnectionDAOImpl.SHOW_COMPANIES_PROJECTS);
             prepStatReadProject.setInt(1, id);
             ResultSet resSetCompaniesProjects = prepStatReadProject.executeQuery();
 
@@ -125,9 +117,6 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
             resultSetCompany.close();
 
             projects.clear();
-        } catch (ClassNotFoundException e) {
-            System.out.println("Driver not found");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -150,9 +139,7 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
         PreparedStatement prepStatProjects;
 
         try {
-
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_ALL_COMPANIES);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -160,7 +147,7 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
                 Integer id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
 
-                prepStatCompaniesProjects = connection.prepareStatement(DBConnectionDAO.SHOW_COMPANIES_PROJECTS);
+                prepStatCompaniesProjects = connection.prepareStatement(DBConnectionDAOImpl.SHOW_COMPANIES_PROJECTS);
                 prepStatCompaniesProjects.setInt(1, id);
                 ResultSet resSetCompaniesProjects = prepStatCompaniesProjects.executeQuery();
 
@@ -205,11 +192,6 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
                 projects.clear();
             }
             resultSet.close();
-
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -234,9 +216,7 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
         String name = company.getName();
 
         try {
-
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(UPDATE_COMPANY);
             preparedStatement.setInt(2, id);
             preparedStatement.setString(1, name);
@@ -244,10 +224,6 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
             preparedStatement.executeUpdate();
 
             System.out.println("Company has updated");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -268,23 +244,17 @@ public class JavaIOCompanyDAOImpl implements CompanyDAO{
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(DELETE_COMPANY);
             preparedStatement.setInt(1, id);
 
-            PreparedStatement PSDeleteCompaniesProjects = connection.prepareStatement(DBConnectionDAO.DELETE_COMPANY_FROM_COMPANIES_PROJECTS);
+            PreparedStatement PSDeleteCompaniesProjects = connection.prepareStatement(DBConnectionDAOImpl.DELETE_COMPANY_FROM_COMPANIES_PROJECTS);
             PSDeleteCompaniesProjects.setInt(1, id);
 
             PSDeleteCompaniesProjects.executeUpdate();
             preparedStatement.executeUpdate();
 
             System.out.println("Company with id = " + id + " has deleted");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();

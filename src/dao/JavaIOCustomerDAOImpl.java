@@ -8,12 +8,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class JavaIOCustomerDAOImpl implements CustomerDAO {
-    CustomersProjectsDAO customersProjectsDAO = new CustomersProjectsDAO();
-
-    public static final String JDBC_DRIVER = "org.postgresql.Driver";
-    public static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
-    public static final String USERNAME = "postgres";
-    public static final String PASSWORD = "Unow6457773";
+    private CustomersProjectsDAO customersProjectsDAO = new CustomersProjectsDAO();
+    private DBConnectionDAOImpl dbConnectionDAO = new DBConnectionDAOImpl();
 
     private final String INSERT_NEW_CUSTOMER = "INSERT INTO customers VALUES(?,?)";
     public static final String SHOW_CUSTOMER = "SELECT * FROM customers WHERE id=?";
@@ -36,9 +32,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
         String name = customer.getName();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(INSERT_NEW_CUSTOMER);
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, name);
@@ -46,11 +40,6 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Customer has created!");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            System.out.println("-----------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -78,9 +67,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
         PreparedStatement PSReadProjects;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_CUSTOMER);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -91,7 +78,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
                 if (customerId == id) {
                     customerName = resultSet.getString("name");
 
-                    PSReadCustomersProjects = connection.prepareStatement(DBConnectionDAO.SELECT_CUSTOMERS_FROM_CUSTOMERS_PROJECTS);
+                    PSReadCustomersProjects = connection.prepareStatement(DBConnectionDAOImpl.SELECT_CUSTOMERS_FROM_CUSTOMERS_PROJECTS);
                     PSReadCustomersProjects.setInt(1, customerId);
                     ResultSet RSCustomersProjects = PSReadCustomersProjects.executeQuery();
 
@@ -141,10 +128,6 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
             }
 
             resultSet.close();
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            System.out.println("-----------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -168,9 +151,8 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
         PreparedStatement psProjects;
 
         try {
-            Class.forName(DBConnectionDAO.JDBC_DRIVER);
-            connection = DriverManager.getConnection(DBConnectionDAO.URL_DATABASE, DBConnectionDAO.USERNAME, DBConnectionDAO.PASSWORD);
-            psCustomersProjects = connection.prepareStatement(DBConnectionDAO.SHOW_CUSTOMERS_PROJECTS);
+            connection = dbConnectionDAO.getDBConnection();
+            psCustomersProjects = connection.prepareStatement(DBConnectionDAOImpl.SHOW_CUSTOMERS_PROJECTS);
             psCustomersProjects.setInt(1, customerID);
             ResultSet rsCustomersProjects = psCustomersProjects.executeQuery();
 
@@ -209,7 +191,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
             }
             System.out.println("====================");
             System.out.println();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -222,9 +204,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
         PreparedStatement psReadProjects;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_ALL_CUSTOMERS);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -232,7 +212,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
                 Integer id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
 
-                psReadCustomersProjects = connection.prepareStatement(DBConnectionDAO.SELECT_CUSTOMERS_FROM_CUSTOMERS_PROJECTS);
+                psReadCustomersProjects = connection.prepareStatement(DBConnectionDAOImpl.SELECT_CUSTOMERS_FROM_CUSTOMERS_PROJECTS);
                 psReadCustomersProjects.setInt(1, id);
                 ResultSet rsReadCustomersProjects = psReadCustomersProjects.executeQuery();
 
@@ -276,10 +256,6 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
             }
 
             resultSet.close();
-        } catch (ClassNotFoundException e) {
-            System.out.println("Driver not found: ");
-            System.out.println("------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -308,9 +284,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
         String name = customer.getName();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(UPDATE_CUSTOMER);
             preparedStatement.setInt(2, id);
             preparedStatement.setString(1, name);
@@ -318,10 +292,6 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Customer has changed.");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -342,9 +312,7 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(DELETE_CUSTOMER);
 
             preparedStatement.setInt(1, id);
@@ -354,10 +322,6 @@ public class JavaIOCustomerDAOImpl implements CustomerDAO {
             System.out.println();
 
             customersProjectsDAO.deleteByCustomer(id);
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();

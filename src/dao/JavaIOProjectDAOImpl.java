@@ -3,14 +3,9 @@ package dao;
 import model.Project;
 
 import java.sql.*;
-import java.util.Set;
 
 public class JavaIOProjectDAOImpl implements ProjectDAO {
-
-    public static final String JDBC_DRIVER = "org.postgresql.Driver";
-    public static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
-    public static final String USERNAME = "postgres";
-    public static final String PASSWORD = "Unow6457773";
+    private DBConnectionDAOImpl dbConnectionDAO = new DBConnectionDAOImpl();
 
     public static final String INSERT_NEW_PROJECT = "INSERT INTO projects VALUES(?,?,?,?)";
     public static final String SHOW_PROJECT = "SELECT * FROM projects WHERE id=?";
@@ -29,9 +24,7 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
         Integer cost = project.getCost();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(INSERT_NEW_PROJECT);
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, name);
@@ -41,11 +34,6 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Project has created!");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            System.out.println("-----------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -71,9 +59,7 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_PROJECT);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -98,11 +84,6 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
             }
 
             resultSet.close();
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            System.out.println("-----------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -126,9 +107,7 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_ALL_PROJECTS);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -146,11 +125,6 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
             }
 
             resultSet.close();
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("Driver not found: ");
-            System.out.println("------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -181,9 +155,7 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
         Integer cost = project.getCost();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(UPDATE_PROJECT);
             preparedStatement.setInt(4, id);
             preparedStatement.setString(1, name);
@@ -193,10 +165,6 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Project has changed.");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -217,19 +185,12 @@ public class JavaIOProjectDAOImpl implements ProjectDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(DELETE_PROJECT);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
             System.out.println("Project with id = " + id + " has deleted");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
-            System.out.println("---------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error");
             System.out.println("______________");

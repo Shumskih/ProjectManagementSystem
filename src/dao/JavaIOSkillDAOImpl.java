@@ -5,10 +5,7 @@ import model.Skill;
 import java.sql.*;
 
 public class JavaIOSkillDAOImpl implements SkillDAO {
-    public static final String JDBC_DRIVER = "org.postgresql.Driver";
-    public static final String URL_DATABASE = "jdbc:postgresql://localhost:5432/learndb";
-    public static final String USERNAME = "postgres";
-    public static final String PASSWORD = "Unow6457773";
+    private DBConnectionDAOImpl dbConnectionDAO = new DBConnectionDAOImpl();
 
     public static final String INSERT_NEW_SKILL = "INSERT INTO skills VALUES(?,?)";
     public static final String SHOW_SKILL = "SELECT * FROM skills WHERE id=?";
@@ -25,9 +22,7 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
         String name = skill.getName();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(INSERT_NEW_SKILL);
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, name);
@@ -35,11 +30,6 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Skill has created!");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            System.out.println("-----------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -65,9 +55,7 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_SKILL);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -88,11 +76,6 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
             }
 
             resultSet.close();
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            System.out.println("-----------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -116,9 +99,7 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(SHOW_ALL_SKILLS);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -132,11 +113,6 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
             }
 
             resultSet.close();
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("Driver not found: ");
-            System.out.println("------------------");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -165,9 +141,7 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
         String name = skill.getName();
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(UPDATE_SKILL);
             preparedStatement.setInt(2, id);
             preparedStatement.setString(1, name);
@@ -175,10 +149,6 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
             preparedStatement.executeUpdate();
 
             System.out.println("Skill has changed.");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found: ");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -199,18 +169,12 @@ public class JavaIOSkillDAOImpl implements SkillDAO {
         PreparedStatement preparedStatement = null;
 
         try {
-
-            Class.forName(JDBC_DRIVER);
-            connection = DriverManager.getConnection(URL_DATABASE, USERNAME, PASSWORD);
+            connection = dbConnectionDAO.getDBConnection();
             preparedStatement = connection.prepareStatement(DELETE_SKILL);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
             System.out.println("Skill with id = " + id + " has deleted");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC driver not found");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
