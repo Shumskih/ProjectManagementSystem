@@ -24,6 +24,7 @@ public class JdbcSkillDAOImpl implements GenericDAO<Skill,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Skill has created!");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -51,6 +52,7 @@ public class JdbcSkillDAOImpl implements GenericDAO<Skill,Long> {
                     }
                 }
             }
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -76,6 +78,7 @@ public class JdbcSkillDAOImpl implements GenericDAO<Skill,Long> {
                             "Name: " + name);
                 }
             }
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -97,6 +100,7 @@ public class JdbcSkillDAOImpl implements GenericDAO<Skill,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Skill has changed.");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -112,6 +116,7 @@ public class JdbcSkillDAOImpl implements GenericDAO<Skill,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Skill with id = " + id + " has deleted");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();

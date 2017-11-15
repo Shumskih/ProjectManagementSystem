@@ -160,19 +160,16 @@ public class CustomerView {
                 }
             }
 
-            while(true) {
+            if(!exit) {
                 System.out.println("Change name? y = yes, n = no:");
                 userInput = br.readLine().trim().toLowerCase();
 
-                if (userInput.equals("n")) {
-                    break;
-                } else {
+                if (userInput.equals("y")) {
                     System.out.println("Enter new customer name:");
                     userInputCustomerName = br.readLine().trim();
 
                     Customer customer = new Customer(customerId, userInputCustomerName);
                     customerController.update(customer);
-                    break;
                 }
             }
 

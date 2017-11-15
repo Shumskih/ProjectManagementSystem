@@ -163,21 +163,18 @@ public class CompanyView {
                 }
             }
 
-            while(!exit) {
+            if(!exit) {
                 do {
                     System.out.println("Change name? y = yes, n = no:");
                     userInput = br.readLine().trim().toLowerCase();
                 } while(!userInput.equals("y") & !userInput.equals("n"));
 
-                if (userInput.equals("n")) {
-                    break;
-                } else {
+                if (userInput.equals("y")) {
                     System.out.println("Enter new company name:");
                     userInputCompanyName = br.readLine().trim();
 
                     Company company = new Company(companyId, userInputCompanyName);
                     companyController.update(company);
-                    break;
                 }
             }
 

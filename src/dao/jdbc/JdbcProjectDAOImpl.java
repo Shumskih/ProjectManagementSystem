@@ -28,6 +28,7 @@ public class JdbcProjectDAOImpl implements GenericDAO<Project,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Project has created!");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -59,6 +60,7 @@ public class JdbcProjectDAOImpl implements GenericDAO<Project,Long> {
                     }
                 }
             }
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -88,6 +90,7 @@ public class JdbcProjectDAOImpl implements GenericDAO<Project,Long> {
                             "Cost: " + cost);
                 }
             }
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -113,6 +116,7 @@ public class JdbcProjectDAOImpl implements GenericDAO<Project,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Project has changed.");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -128,6 +132,7 @@ public class JdbcProjectDAOImpl implements GenericDAO<Project,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Project with id = " + id + " has deleted");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error");
             System.out.println("______________");

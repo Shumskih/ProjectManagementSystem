@@ -1,7 +1,6 @@
 package decorations;
 
 public class Decorations {
-
     public static void returnToMainMenu() {
         try {
             System.out.print("Returning to main menu.");

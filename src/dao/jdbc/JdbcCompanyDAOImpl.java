@@ -31,6 +31,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Company has created");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -100,6 +101,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
                 }
             }
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -164,6 +166,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
                 }
             }
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -184,6 +187,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Company has updated");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -204,6 +208,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Company with id = " + id + " has deleted");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -219,6 +224,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
 
             psCompaniesProjects.executeUpdate();
             System.out.println("Project has added");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -267,6 +273,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
                 }
             }
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -280,6 +287,7 @@ public class JdbcCompanyDAOImpl implements GenericDAO<Company,Long> {
 
             psCompaniesProjects.executeUpdate();
             System.out.println("Project has deleted");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }

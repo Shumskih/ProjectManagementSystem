@@ -30,6 +30,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Customer has created!");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -109,6 +110,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
                 }
             }
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -165,6 +167,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
             System.out.println("====================");
             System.out.println();
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -220,6 +223,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
                 }
             }
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -241,6 +245,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Customer has changed.");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -259,6 +264,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
             System.out.println();
 
             deleteByCustomer(id);
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error");
             e.printStackTrace();
@@ -276,6 +282,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
 
             System.out.println("Project has added");
             System.out.println();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -291,6 +298,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
 
             System.out.println("Project has deleted");
             System.out.println();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -305,6 +313,7 @@ public class JdbcCustomerDAOImpl implements GenericDAO<Customer,Long> {
             psCustomersProjects.executeUpdate();
             System.out.println("All related projects are deleted");
             System.out.println();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }

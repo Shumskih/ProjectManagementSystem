@@ -40,6 +40,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Developer has created.");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -151,6 +152,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
             }
             skills.clear();
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             System.out.println("----------------");
@@ -182,6 +184,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
                     salary = rsReadDeveloper.getInt("salary");
                 }
             }
+            connectionUtil.putConnection(connection);
         } catch(SQLException e) {
             e.printStackTrace();
         }
@@ -233,6 +236,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
                 }
             }
             projects.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -282,6 +286,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
                 }
             }
             skills.clear();
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -307,6 +312,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
                                     "Experience: " + experience + " year" + "\n" +
                                     "Salary: " + salary);
             }
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -333,6 +339,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Developer has updated.");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -348,6 +355,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
             preparedStatement.executeUpdate();
 
             System.out.println("Developer with id = " + id + " has deleted");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             System.out.println("Database error: ");
             e.printStackTrace();
@@ -363,6 +371,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
 
             psProjectsDevelopers.executeUpdate();
             System.out.println("Project has added");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -376,6 +385,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
             psProjectsDevelopers.executeUpdate();
 
             System.out.println("Project has deleted");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -390,6 +400,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
 
             psDevelopersSkills.executeUpdate();
             System.out.println("Skill has added");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -403,6 +414,7 @@ public class JdbcDeveloperDAOImpl implements GenericDAO<Developer,Long> {
             psDevelopersSkills.executeUpdate();
 
             System.out.println("Skill has deleted");
+            connectionUtil.putConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }

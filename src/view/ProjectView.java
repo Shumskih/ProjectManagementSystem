@@ -265,7 +265,6 @@ public class ProjectView {
 
                                     if (userInput.equals("c")) {
                                         Decorations.returnToMainMenu();
-                                        exit = true;
                                     } else {
                                         projectCost = Integer.parseInt(userInput);
                                         break;
