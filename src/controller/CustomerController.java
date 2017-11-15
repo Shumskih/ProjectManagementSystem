@@ -1,32 +1,44 @@
 package controller;
 
-import dao.JavaIOCustomerDAOImpl;
+import dao.jdbc.JdbcCustomerDAOImpl;
 import model.Customer;
 
 public class CustomerController {
-    private JavaIOCustomerDAOImpl javaIOCustomerDAOImpl = new JavaIOCustomerDAOImpl();
+    private JdbcCustomerDAOImpl jdbcCustomerDAO = new JdbcCustomerDAOImpl();
 
-    public void create(Customer customer) {
-        javaIOCustomerDAOImpl.create(customer);
+    public void save(Customer customer) {
+        jdbcCustomerDAO.save(customer);
     }
 
-    public void read(int id) {
-        javaIOCustomerDAOImpl.read(id);
+    public void getById(int id) {
+        jdbcCustomerDAO.getById(id);
     }
 
-    public void readListOfProjects(int customerId) {
-        javaIOCustomerDAOImpl.readListOfProjects(customerId);
+    public void getListOfProjects(int customerId) {
+        jdbcCustomerDAO.getListOfProjects(customerId);
     }
 
-    public void readAll() {
-        javaIOCustomerDAOImpl.readAll();
+    public void getAll() {
+        jdbcCustomerDAO.getAll();
     }
 
     public void update(Customer customer) {
-        javaIOCustomerDAOImpl.update(customer);
+        jdbcCustomerDAO.update(customer);
     }
 
     public void delete(int id) {
-        javaIOCustomerDAOImpl.delete(id);
+        jdbcCustomerDAO.delete(id);
+    }
+
+    public void insertCustProj(int customerId, int projectId) {
+        jdbcCustomerDAO.insertCustProj(customerId, projectId);
+    }
+
+    public void deleteByProject(int projectId) {
+        jdbcCustomerDAO.deleteByProject(projectId);
+    }
+
+    public void deleteByCustomer(int customerId) {
+        jdbcCustomerDAO.deleteByCustomer(customerId);
     }
 }

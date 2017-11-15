@@ -1,28 +1,30 @@
 package controller;
 
-import dao.JavaIOSkillDAOImpl;
+import dao.jdbc.JdbcSkillDAOImpl;
 import model.Skill;
 
 public class SkillController {
-    private JavaIOSkillDAOImpl javaIOSkillDAOImpl = new JavaIOSkillDAOImpl();
+    private JdbcSkillDAOImpl jdbcSkillDAO = new JdbcSkillDAOImpl();
 
-    public void create(Skill skill) {
-        javaIOSkillDAOImpl.create(skill);
+    public void save(Skill skill) {
+        jdbcSkillDAO.save(skill);
     }
 
-    public void read(int id) {
-        javaIOSkillDAOImpl.read(id);
+    public Skill getById(int id) {
+        Skill skill;
+        skill = jdbcSkillDAO.getById(id);
+        return skill;
     }
 
-    public void readAll() {
-        javaIOSkillDAOImpl.readAll();
+    public void getAll() {
+        jdbcSkillDAO.getAll();
     }
 
     public void update(Skill skill) {
-        javaIOSkillDAOImpl.update(skill);
+        jdbcSkillDAO.update(skill);
     }
 
     public void delete(int id) {
-        javaIOSkillDAOImpl.delete(id);
+        jdbcSkillDAO.delete(id);
     }
 }

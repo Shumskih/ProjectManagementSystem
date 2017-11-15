@@ -1,29 +1,41 @@
 package controller;
 
-import dao.JavaIOCompanyDAOImpl;
+import dao.jdbc.JdbcCompanyDAOImpl;
 import model.Company;
 
 public class CompanyController {
-    private JavaIOCompanyDAOImpl javaIOCompanyDAOImpl = new JavaIOCompanyDAOImpl();
+    private JdbcCompanyDAOImpl jdbcCompanyDAO = new JdbcCompanyDAOImpl();
 
-    public void create(Company company) {
-        javaIOCompanyDAOImpl.create(company);
+    public void save(Company company) {
+        jdbcCompanyDAO.save(company);
     }
 
-    public void read(int id) {
-        javaIOCompanyDAOImpl.read(id);
+    public void getById(int id) {
+        jdbcCompanyDAO.getById(id);
     }
 
-    public void readAll() {
-        javaIOCompanyDAOImpl.readAll();
+    public void getAll() {
+        jdbcCompanyDAO.getAll();
     }
 
     public void update(Company company) {
-        javaIOCompanyDAOImpl.update(company);
+        jdbcCompanyDAO.update(company);
     }
 
     public void delete(int id) {
-        javaIOCompanyDAOImpl.delete(id);
+        jdbcCompanyDAO.delete(id);
+    }
+
+    public void insertComProj(int companyId, int projectId) {
+       jdbcCompanyDAO.insertComProj(companyId, projectId);
+    }
+
+    public void getListOfProjects(int companyId) {
+        jdbcCompanyDAO.getListOfProjects(companyId);
+    }
+
+    public void deleteByProject(int projectId) {
+        jdbcCompanyDAO.deleteByProject(projectId);
     }
 
 }

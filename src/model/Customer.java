@@ -46,5 +46,14 @@ public class Customer {
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
     }
+
+    @Override
+    public String toString() {
+        return "==========" +
+                "ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "Projects: " + projects + "\n" +
+                "==========";
+    }
 }
 

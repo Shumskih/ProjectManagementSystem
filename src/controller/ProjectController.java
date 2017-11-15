@@ -1,28 +1,30 @@
 package controller;
 
-import dao.JavaIOProjectDAOImpl;
+import dao.jdbc.JdbcProjectDAOImpl;
 import model.Project;
 
 public class ProjectController {
-    private JavaIOProjectDAOImpl javaIOProjectDAOImpl = new JavaIOProjectDAOImpl();
+    private JdbcProjectDAOImpl jdbcIOProjectDAO = new JdbcProjectDAOImpl();
 
-    public void create(Project project) {
-        javaIOProjectDAOImpl.create(project);
+    public void save(Project project) {
+        jdbcIOProjectDAO.save(project);
     }
 
-    public void read(int id) {
-        javaIOProjectDAOImpl.read(id);
+    public Project getById(int id) {
+        Project project;
+        project = jdbcIOProjectDAO.getById(id);
+        return project;
     }
 
-    public void readAll() {
-        javaIOProjectDAOImpl.readAll();
+    public void getAll() {
+        jdbcIOProjectDAO.getAll();
     }
 
     public void update(Project project) {
-        javaIOProjectDAOImpl.update(project);
+        jdbcIOProjectDAO.update(project);
     }
 
     public void delete(int id) {
-        javaIOProjectDAOImpl.delete(id);
+       jdbcIOProjectDAO.delete(id);
     }
 }

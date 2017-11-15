@@ -1,6 +1,7 @@
 package view;
 
 import controller.SkillController;
+import decorations.Decorations;
 import model.Skill;
 
 import java.io.BufferedReader;
@@ -22,36 +23,48 @@ public class SkillView {
 
        try {
            while(!exit) {
-               System.out.println("Enter skill's ID or c to cancel:");
-               userInput = br.readLine().trim().toLowerCase();
+               while (!exit) {
+                   System.out.println("Enter skill's ID or c to cancel:");
+                   userInput = br.readLine().trim().toLowerCase();
 
-               if (userInput.equals("c")) {
-                   returnToMainMenuBar();
-                   exit = true;
-               } else {
-                   skillId = Integer.parseInt(userInput);
-                   break;
+                   if (userInput.equals("c")) {
+                       Decorations.returnToMainMenu();
+                       exit = true;
+                   } else {
+                       skillId = Integer.parseInt(userInput);
+                       break;
+                   }
                }
-           }
 
-           while(!exit) {
-               System.out.println("Enter name of skill or c to cancel:");
-               userInput = br.readLine().trim();
+               while (!exit) {
+                   System.out.println("Enter name of skill or c to cancel:");
+                   userInput = br.readLine().trim();
 
-               if (userInput.equals("c")) {
-                   returnToMainMenuBar();
-                   exit = true;
-               } else {
-                   skillName = userInput;
-                   break;
+                   if (userInput.equals("c")) {
+                       Decorations.returnToMainMenu();
+                       exit = true;
+                   } else {
+                       skillName = userInput;
+                       break;
+                   }
                }
-           }
 
-            if(!exit) {
-                Skill skill = new Skill(skillId, skillName);
-                skillController.create(skill);
-                returnToMainMenuBar();
-            }
+               if (!exit) {
+                   Skill skill = new Skill(skillId, skillName);
+                   skillController.save(skill);
+
+                   do {
+                       System.out.println("Create another one skill? y = yes, n =  no:");
+                       userInput = br.readLine().trim();
+                   } while (!userInput.equals("y") && !userInput.equals("n"));
+
+                   if(userInput.equals("n")) {
+                       Decorations.returnToMainMenu();
+                       exit = true;
+                   }
+               }
+
+           }
        } catch (IOException e) {
            e.printStackTrace();
        }
@@ -65,9 +78,9 @@ public class SkillView {
                userInput = br.readLine().trim().toLowerCase();
 
                if(!userInput.equals("c")) {
-                   skillController.read(Integer.parseInt(userInput));
+                   skillController.getById(Integer.parseInt(userInput));
                } else {
-                   returnToMainMenuBar();
+                   Decorations.returnToMainMenu();
                    exit = true;
                }
            }
@@ -79,7 +92,7 @@ public class SkillView {
    public void showAllSkills() {
        boolean exit = false;
 
-       skillController.readAll();
+       skillController.getAll();
        System.out.println();
 
        try {
@@ -93,7 +106,7 @@ public class SkillView {
                }
 
                if (userInput.equals("c")) {
-                   returnToMainMenuBar();
+                   Decorations.returnToMainMenu();
                    exit = true;
                }
            }
@@ -103,6 +116,7 @@ public class SkillView {
    }
 
     public void updateSkill() {
+       Integer id = null;
        String userInputSkillName;
        boolean exit = false;
 
@@ -111,31 +125,47 @@ public class SkillView {
                System.out.println("Enter ID of skill you're going to update or c to cancel:");
                userInput = br.readLine().trim().toLowerCase();
                if(userInput.equals("c")) {
-                   returnToMainMenuBar();
+                   Decorations.returnToMainMenu();
                    exit = true;
                } else {
-                   Integer id = Integer.parseInt(userInput);
+                   id = Integer.parseInt(userInput);
                    System.out.println("This is a skill you're going to update:");
-                   skillController.read(id);
-                   break;
+                   skillController.getById(id);
                }
-           }
 
-           while(!exit) {
-               System.out.println("Change name? y = yes, n = no:");
-               userInput = br.readLine().trim().toLowerCase();
+               if(!exit) {
+                   do {
+                       System.out.println("Change name? y = yes, n = no:");
+                       userInput = br.readLine().trim().toLowerCase();
+                   } while (!userInput.equals("y") && !userInput.equals("n"));
 
-               if(userInput.equals("n")) {
-                   returnToMainMenuBar();
-                   exit = true;
-               } else {
-                   System.out.println("Enter new name of skill:");
-                   userInputSkillName = br.readLine().trim();
+                   if (userInput.equals("n")) {
+                       Decorations.returnToMainMenu();
+                       exit = true;
+                   } else {
+                       System.out.println("Enter new name of skill or c to cancel:");
+                       userInputSkillName = br.readLine().trim();
 
-                   Skill skill = new Skill(skillId, userInputSkillName);
-                   skillController.update(skill);
-                   returnToMainMenuBar();
-                   break;
+                       if(userInputSkillName.equals("c")) {
+                           Decorations.returnToMainMenu();
+                           exit = true;
+                       } else {
+                           Skill skill = new Skill(id, userInputSkillName);
+                           skillController.update(skill);
+                       }
+
+                       if(!exit) {
+                           do {
+                               System.out.println("Update another one skill? y = yes, n =  no:");
+                               userInput = br.readLine().trim();
+                           } while (!userInput.equals("y") && !userInput.equals("n"));
+
+                           if (userInput.equals("n")) {
+                               Decorations.returnToMainMenu();
+                               exit = true;
+                           }
+                       }
+                   }
                }
            }
        } catch (IOException e) {
@@ -153,10 +183,8 @@ public class SkillView {
 
                if(!userInput.equals("c")) {
                    skillController.delete(Integer.parseInt(userInput));
-                   returnToMainMenuBar();
-                   break;
                } else {
-                   returnToMainMenuBar();
+                   Decorations.returnToMainMenu();
                    exit = true;
                }
            }
@@ -164,27 +192,4 @@ public class SkillView {
            e.printStackTrace();
        }
    }
-
-    private void returnToMainMenuBar() {
-        try {
-            System.out.println();
-            System.out.print("Returning to main menu.");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.println();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }

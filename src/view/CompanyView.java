@@ -3,6 +3,7 @@ package view;
 import controller.CompanyController;
 import controller.ProjectController;
 import dao.*;
+import decorations.Decorations;
 import model.Company;
 
 import java.io.BufferedReader;
@@ -12,7 +13,6 @@ import java.io.InputStreamReader;
 public class CompanyView {
     private CompanyController companyController = new CompanyController();
     private ProjectController projectController = new ProjectController();
-    private CompaniesProjectsDAO companiesProjectsDAO = new CompaniesProjectsDAO();
 
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -30,7 +30,7 @@ public class CompanyView {
                  userInput = br.readLine().trim().toLowerCase();
 
                  if (userInput.equals("c")) {
-                     returnToMainMenuBar();
+                     Decorations.returnToMainMenu();
                      exit = true;
                  } else {
                      companyId = Integer.parseInt(userInput);
@@ -43,13 +43,13 @@ public class CompanyView {
                     userInput = br.readLine().trim();
 
                     if (userInput.equals("c")) {
-                        returnToMainMenuBar();
+                        Decorations.returnToMainMenu();
                         exit = true;
                     } else {
                         companyName = userInput;
 
                         Company company = new Company(companyId, companyName);
-                        companyController.create(company);
+                        companyController.save(company);
                         break;
                     }
                 }
@@ -64,25 +64,25 @@ public class CompanyView {
                     }
 
                     if (userInput.equals("n")) {
-                        returnToMainMenuBar();
+                        Decorations.returnToMainMenu();
                         exit = true;
                     } else {
                         System.out.println("There is list of projects:");
                         System.out.println("--------------------------");
-                        projectController.readAll();
+                        projectController.getAll();
                         System.out.println();
 
                         System.out.println("Enter ID of project you're going to add:");
                         userInput = br.readLine().trim().toLowerCase();
                         System.out.println();
 
-                        companiesProjectsDAO.insert(companyId, Integer.parseInt(userInput));
+                        companyController.insertComProj(companyId, Integer.parseInt(userInput));
 
                         System.out.println("Add another project to company? y = yes or n = no:");
                         userInput = br.readLine().trim().toLowerCase();
 
                         if(userInput.equals("n")) {
-                            returnToMainMenuBar();
+                            Decorations.returnToMainMenu();
                             exit = true;
                         }
                     }
@@ -101,9 +101,9 @@ public class CompanyView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 if (!userInput.equals("c")) {
-                    companyController.read(Integer.parseInt(userInput));
+                    companyController.getById(Integer.parseInt(userInput));
                 } else {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
@@ -115,7 +115,7 @@ public class CompanyView {
     public void showAllCompanies() {
         boolean exit = false;
 
-        companyController.readAll();
+        companyController.getAll();
         System.out.println();
 
         try {
@@ -129,7 +129,7 @@ public class CompanyView {
                 }
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
@@ -152,13 +152,13 @@ public class CompanyView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     id = Integer.parseInt(userInput);
 
                     System.out.println("This is a company you're going to update:");
-                    companyController.read(id);
+                    companyController.getById(id);
                     break;
                 }
             }
@@ -189,10 +189,10 @@ public class CompanyView {
 
                 if (userInput.equals("n")) {
                     exit = true;
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                 } else {
                     System.out.println("There is list of projects company has:");
-                    companiesProjectsDAO.readListOfProjects(id);
+                    companyController.getListOfProjects(id);
                 }
             }
 
@@ -212,20 +212,20 @@ public class CompanyView {
                         userInput = br.readLine().trim().toLowerCase();
                         System.out.println();
 
-                        companiesProjectsDAO.deleteByProject(Integer.parseInt(userInput));
-                        returnToMainMenuBar();
+                        companyController.deleteByProject(Integer.parseInt(userInput));
+                        Decorations.returnToMainMenu();
                         exit = true;
                     } else {
                         System.out.println("There is list of projects:");
-                        projectController.readAll();
+                        projectController.getAll();
                         System.out.println();
 
                         System.out.println("Enter ID of project you're going to add:");
                         userInput = br.readLine().trim().toLowerCase();
                         System.out.println();
 
-                        companiesProjectsDAO.insert(id, Integer.parseInt(userInput));
-                        returnToMainMenuBar();
+                        companyController.insertComProj(id, Integer.parseInt(userInput));
+                        Decorations.returnToMainMenu();
                         exit = true;
                     }
                 }
@@ -243,7 +243,7 @@ public class CompanyView {
             while(!exit) {
                 System.out.println("There is lis of companies:");
                 System.out.println("--------------------------");
-                companyController.readAll();
+                companyController.getAll();
                 System.out.println();
 
                 System.out.println("Enter ID of company you are going to delete or c to cancel:");
@@ -251,37 +251,14 @@ public class CompanyView {
 
                 if (!userInput.equals("c")) {
                     companyController.delete(Integer.parseInt(userInput));
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     break;
                 } else {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void returnToMainMenuBar() {
-        try {
-            System.out.println();
-            System.out.print("Returning to main menu.");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.println();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

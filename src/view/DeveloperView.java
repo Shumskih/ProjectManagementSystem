@@ -3,8 +3,7 @@ package view;
 import controller.DeveloperController;
 import controller.ProjectController;
 import controller.SkillController;
-import dao.DeveloperSkillsDAO;
-import dao.ProjectsDeveloperDAO;
+import decorations.Decorations;
 import model.Developer;
 import model.Project;
 import model.Skill;
@@ -19,8 +18,6 @@ public class DeveloperView {
     private DeveloperController developerController = new DeveloperController();
     private SkillController skillController = new SkillController();
     private ProjectController projectController = new ProjectController();
-    private ProjectsDeveloperDAO projectsDeveloperDAO = new ProjectsDeveloperDAO();
-    private DeveloperSkillsDAO developerSkillsDAO = new DeveloperSkillsDAO();
 
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -41,7 +38,7 @@ public class DeveloperView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     developerId = Integer.parseInt(userInput);
@@ -54,7 +51,7 @@ public class DeveloperView {
                 userInput = br.readLine().trim();
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     developerName = userInput;
@@ -67,7 +64,7 @@ public class DeveloperView {
                 userInput = br.readLine().trim();
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     developerSpecialization = userInput;
@@ -80,7 +77,7 @@ public class DeveloperView {
                 userInput = br.readLine().trim();
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     developerExperience = Integer.parseInt(userInput);
@@ -93,13 +90,13 @@ public class DeveloperView {
                 userInput = br.readLine().trim();
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     developerSalary = Integer.parseInt(userInput);
 
                     Developer developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary);
-                    developerController.create(developer);
+                    developerController.save(developer);
                     break;
                 }
             }
@@ -115,14 +112,14 @@ public class DeveloperView {
                     break;
                 } else {
                     System.out.println("There is list of skills:");
-                    skillController.readAll();
+                    skillController.getAll();
                     System.out.println();
 
                     System.out.println("Enter ID of skill you're going to add:");
                     userInput = br.readLine().trim().toLowerCase();
                     System.out.println();
 
-                    developerSkillsDAO.insert(developerId, Integer.parseInt(userInput));
+                    developerController.insertDevSkill(developerId, Integer.parseInt(userInput));
 
                     System.out.println("Add another one skill? y = yes, n = no:");
                     userInput = br.readLine().trim().toLowerCase();
@@ -141,12 +138,12 @@ public class DeveloperView {
                     }
 
                     if (userInput.equals("n")) {
-                        returnToMainMenuBar();
+                        Decorations.returnToMainMenu();
                         exit = true;
                     } else {
                         System.out.println("There is list of projects:");
                         System.out.println("--------------------------");
-                        projectController.readAll();
+                        projectController.getAll();
                         System.out.println();
 
 
@@ -154,13 +151,13 @@ public class DeveloperView {
                         userInput = br.readLine().trim().toLowerCase();
                         System.out.println();
 
-                        projectsDeveloperDAO.insert(developerId, Integer.parseInt(userInput));
+                        developerController.insertProjDev(Integer.parseInt(userInput), developerId);
 
                         System.out.println("Add another one project? y = yes, n = no:");
                         userInput = br.readLine().trim().toLowerCase();
 
                         if(userInput.equals("n")) {
-                            returnToMainMenuBar();
+                            Decorations.returnToMainMenu();
                             exit = true;
                         }
                     }
@@ -180,9 +177,9 @@ public class DeveloperView {
                 userInput = br.readLine().trim();
 
                 if(!userInput.equals("c")) {
-                    developerController.read(Integer.parseInt(userInput));
+                    developerController.getById(Integer.parseInt(userInput));
                 } else {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
@@ -194,7 +191,7 @@ public class DeveloperView {
     public void showAllDevelopers() {
         boolean exit = false;
 
-        developerController.readAll();
+        developerController.getAll();
         System.out.println();
 
         try {
@@ -208,7 +205,7 @@ public class DeveloperView {
                 }
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
@@ -228,7 +225,7 @@ public class DeveloperView {
         Set<Skill> skills = new LinkedHashSet<>();
         Set<Project> projects = new LinkedHashSet<>();
 
-        Developer developer = null;
+        Developer developer;
 
         String userInputDevName;
         String userInputDevSpecialization;
@@ -243,15 +240,14 @@ public class DeveloperView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 if(userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     id = Integer.parseInt(userInput);
                     developerId = id;
 
                     System.out.println("There is a developer you are going to update:");
-                    developerController.read(id);
-                    developer = developerController.readDeveloper(id);
+                    developer = developerController.getById(id);
 
                     devId = developer.getId();
                     name = developer.getName();
@@ -260,12 +256,6 @@ public class DeveloperView {
                     salary = developer.getSalary();
                     skills = developer.getSkills();
                     projects = developer.getProjects();
-
-                    System.out.println(devId + "\n" +
-                                        name + "\n" +
-                                        specialization + "\n" +
-                                        experience + "\n" +
-                                        salary);
                 }
 
                     while(!exit) {
@@ -282,16 +272,16 @@ public class DeveloperView {
                         userInput = br.readLine().trim().toLowerCase();
 
                         if(userInput.equals("8")) {
-                            returnToMainMenuBar();
+                            Decorations.returnToMainMenu();
                             exit = true;
                         } else {
                             switch (userInput) {
                                 case "1":
                                     System.out.println("Enter new developer's name or c to cancel:");
-                                    userInput = br.readLine().trim().toLowerCase();
+                                    userInput = br.readLine().trim();
 
                                     if(userInput.equals("c")) {
-                                        returnToMainMenuBar();
+                                        Decorations.returnToMainMenu();
                                         exit = true;
                                     } else {
                                         userInputDevName = userInput;
@@ -305,7 +295,7 @@ public class DeveloperView {
                                     userInput = br.readLine().trim();
 
                                     if(userInput.equals("c")) {
-                                        returnToMainMenuBar();
+                                        Decorations.returnToMainMenu();
                                         exit = true;
                                     } else {
                                         userInputDevSpecialization = userInput;
@@ -319,7 +309,7 @@ public class DeveloperView {
                                     userInput = br.readLine().trim();
 
                                     if(userInput.equals("c")) {
-                                        returnToMainMenuBar();
+                                        Decorations.returnToMainMenu();
                                         exit = true;
                                     } else {
                                         userInputDevExperience = Integer.parseInt(userInput);
@@ -333,7 +323,7 @@ public class DeveloperView {
                                     userInput = br.readLine().trim();
 
                                     if(userInput.equals("c")) {
-                                        returnToMainMenuBar();
+                                        Decorations.returnToMainMenu();
                                         exit = true;
                                     } else {
                                         userInputDevSalary = Integer.parseInt(userInput);
@@ -345,7 +335,7 @@ public class DeveloperView {
                                 case "5":
                                     System.out.println("There is list of skills developer has:");
                                     System.out.println("--------------------------------------");
-                                    developerController.readListOfSkills(id);
+                                    developerController.getListOfSkills(id);
 
                                     while(!exit) {
                                         System.out.println("Delete skill or insert new? d = delete, i = insert new:");
@@ -363,20 +353,20 @@ public class DeveloperView {
                                                 userInput = br.readLine().trim().toLowerCase();
                                                 System.out.println();
 
-                                                developerSkillsDAO.deleteBySkill(Integer.parseInt(userInput));
-                                                returnToMainMenuBar();
+                                                developerController.deleteBySkill(Integer.parseInt(userInput));
+                                                Decorations.returnToMainMenu();
                                                 exit = true;
                                             } else {
-                                                System.out.println("There is list of projects:");
-                                                projectController.readAll();
+                                                System.out.println("There is list of skills:");
+                                                skillController.getAll();
                                                 System.out.println();
 
-                                                System.out.println("Enter ID of project you're going to add:");
+                                                System.out.println("Enter ID of skill you're going to add:");
                                                 userInput = br.readLine().trim().toLowerCase();
                                                 System.out.println();
 
-                                                developerSkillsDAO.insert(id, Integer.parseInt(userInput));
-                                                returnToMainMenuBar();
+                                                developerController.insertDevSkill(id, Integer.parseInt(userInput));
+                                                Decorations.returnToMainMenu();
                                                 exit = true;
                                             }
                                         }
@@ -384,7 +374,7 @@ public class DeveloperView {
                                 case "6":
                                     System.out.println("There is list of projects developer has:");
                                     System.out.println("--------------------------------------");
-                                    developerController.readListOfProjects(id);
+                                    developerController.getListOfProjects(id);
 
                                     while(!exit) {
                                         System.out.println("Delete project or insert new? d = delete, i = insert new:");
@@ -402,20 +392,20 @@ public class DeveloperView {
                                                 userInput = br.readLine().trim().toLowerCase();
                                                 System.out.println();
 
-                                                projectsDeveloperDAO.deleteByProject(Integer.parseInt(userInput));
-                                                returnToMainMenuBar();
+                                                developerController.deleteByProject(Integer.parseInt(userInput));
+                                                Decorations.returnToMainMenu();
                                                 exit = true;
                                             } else {
                                                 System.out.println("There is list of projects:");
-                                                projectController.readAll();
+                                                projectController.getAll();
                                                 System.out.println();
 
                                                 System.out.println("Enter ID of project you're going to add:");
                                                 userInput = br.readLine().trim().toLowerCase();
                                                 System.out.println();
 
-                                                projectsDeveloperDAO.insert(id, Integer.parseInt(userInput));
-                                                returnToMainMenuBar();
+                                                developerController.insertProjDev(Integer.parseInt(userInput), id);
+                                                Decorations.returnToMainMenu();
                                                 exit = true;
                                             }
                                         }
@@ -426,7 +416,7 @@ public class DeveloperView {
                                         userInput = br.readLine().trim().toLowerCase();
 
                                         if (userInput.equals("c")) {
-                                            returnToMainMenuBar();
+                                            Decorations.returnToMainMenu();
                                             exit = true;
                                         } else {
                                             developerName = userInput;
@@ -439,7 +429,7 @@ public class DeveloperView {
                                         userInput = br.readLine().trim().toLowerCase();
 
                                         if(userInput.equals("c")) {
-                                            returnToMainMenuBar();
+                                            Decorations.returnToMainMenu();
                                             exit = true;
                                         } else {
                                             developerSpecialization = userInput;
@@ -452,7 +442,7 @@ public class DeveloperView {
                                         userInput = br.readLine().trim().toLowerCase();
 
                                         if(userInput.equals("c")) {
-                                            returnToMainMenuBar();
+                                            Decorations.returnToMainMenu();
                                             exit = true;
                                         } else {
                                             developerExperience = Integer.parseInt(userInput);
@@ -465,7 +455,7 @@ public class DeveloperView {
                                         userInput = br.readLine().trim().toLowerCase();
 
                                         if(userInput.equals("c")) {
-                                            returnToMainMenuBar();
+                                            Decorations.returnToMainMenu();
                                             exit = true;
                                         } else {
                                             developerSalary = Integer.parseInt(userInput);
@@ -473,9 +463,11 @@ public class DeveloperView {
                                         }
                                     }
 
-                                    developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary);
-                                    developerController.update(developer);
-                                    break;
+                                    if(!exit) {
+                                        developer = new Developer(developerId, developerName, developerSpecialization, developerExperience, developerSalary);
+                                        developerController.update(developer);
+                                        break;
+                                    }
                             }
                         }
                     }
@@ -497,36 +489,14 @@ public class DeveloperView {
 
                 if(!userInput.equals("c")) {
                     developerController.delete(Integer.parseInt(userInput));
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     break;
                 } else {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void returnToMainMenuBar() {
-        try {
-            System.out.print("Returning to main menu.");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.println();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

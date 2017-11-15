@@ -2,7 +2,7 @@ package view;
 
 import controller.CustomerController;
 import controller.ProjectController;
-import dao.CustomersProjectsDAO;
+import decorations.Decorations;
 import model.Customer;
 
 import java.io.BufferedReader;
@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 public class CustomerView {
     private CustomerController customerController = new CustomerController();
     private ProjectController projectController = new ProjectController();
-    private CustomersProjectsDAO customersProjectsDAO = new CustomersProjectsDAO();
 
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -30,7 +29,7 @@ public class CustomerView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 if(userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     customerId = Integer.parseInt(userInput);
@@ -43,13 +42,13 @@ public class CustomerView {
                 userInput = br.readLine().trim();
 
                 if(userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     customerName = userInput;
 
                     Customer customer = new Customer(customerId, customerName);
-                    customerController.create(customer);
+                    customerController.save(customer);
                     break;
                 }
             }
@@ -64,24 +63,24 @@ public class CustomerView {
                 }
 
                 if(userInput.equals("n")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 } else {
                     System.out.println("There is list of projects:");
                     System.out.println("--------------------------");
-                    projectController.readAll();
+                    projectController.getAll();
                     System.out.println();
 
                     System.out.println("Enter ID of project you're going to add:");
                     userInput = br.readLine().trim().toLowerCase();
 
-                    customersProjectsDAO.insert(customerId, Integer.parseInt(userInput));
+                    customerController.insertCustProj(customerId, Integer.parseInt(userInput));
 
                     System.out.println("Add another project? y = yes, n = no:");
                     userInput = br.readLine().trim().toLowerCase();
 
                     if(userInput.equals("n")) {
-                        returnToMainMenuBar();
+                        Decorations.returnToMainMenu();
                         exit = true;
                     }
                 }
@@ -100,9 +99,9 @@ public class CustomerView {
                 userInput = br.readLine().trim().toLowerCase();
 
                 if(!userInput.equals("c")) {
-                    customerController.read(Integer.parseInt(userInput));
+                    customerController.getById(Integer.parseInt(userInput));
                 } else {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
@@ -114,7 +113,7 @@ public class CustomerView {
     public void showAllCustomers() {
         boolean exit = false;
 
-        customerController.readAll();
+        customerController.getAll();
         System.out.println();
 
         try {
@@ -128,7 +127,7 @@ public class CustomerView {
                 }
 
                 if (userInput.equals("c")) {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
@@ -151,12 +150,12 @@ public class CustomerView {
 
                 if (userInput.equals("c")) {
                     exit = true;
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                 } else {
                     id = Integer.parseInt(userInput);
 
                     System.out.println("This is a customer you're going to update:");
-                    customerController.read(id);
+                    customerController.getById(id);
                     break;
                 }
             }
@@ -186,10 +185,10 @@ public class CustomerView {
 
             if (userInput.equals("n")) {
                 exit = true;
-                returnToMainMenuBar();
+                Decorations.returnToMainMenu();
             } else {
                 System.out.println("There is list of projects customer has:");
-                customerController.readListOfProjects(id);
+                customerController.getListOfProjects(id);
             }
 
             while(!exit) {
@@ -208,20 +207,20 @@ public class CustomerView {
                         userInput = br.readLine().trim().toLowerCase();
                         System.out.println();
 
-                        customersProjectsDAO.deleteByProject(Integer.parseInt(userInput));
-                        returnToMainMenuBar();
+                        customerController.deleteByProject(Integer.parseInt(userInput));
+                        Decorations.returnToMainMenu();
                         exit = true;
                     } else {
                         System.out.println("There is list of projects:");
-                        projectController.readAll();
+                        projectController.getAll();
                         System.out.println();
 
                         System.out.println("Enter ID of project you're going to add:");
                         userInput = br.readLine().trim().toLowerCase();
                         System.out.println();
 
-                        customersProjectsDAO.insert(id, Integer.parseInt(userInput));
-                        returnToMainMenuBar();
+                        customerController.insertCustProj(id, Integer.parseInt(userInput));
+                        Decorations.returnToMainMenu();
                         exit = true;
                     }
                 }
@@ -239,7 +238,7 @@ public class CustomerView {
             while(!exit) {
                 System.out.println("There is lis of customers:");
                 System.out.println("--------------------------");
-                customerController.readAll();
+                customerController.getAll();
                 System.out.println();
 
                 System.out.println("Enter ID of customer you're going to delete or c to cancel:");
@@ -247,36 +246,14 @@ public class CustomerView {
 
                 if(!userInput.equals("c")) {
                     customerController.delete(Integer.parseInt(userInput));
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     break;
                 } else {
-                    returnToMainMenuBar();
+                    Decorations.returnToMainMenu();
                     exit = true;
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void returnToMainMenuBar() {
-        try {
-            System.out.print("Returning to main menu.");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.print(".");
-            Thread.currentThread().sleep(300);
-            System.out.println();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

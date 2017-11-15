@@ -46,4 +46,15 @@ public class Company {
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
     }
+
+    @Override
+    public String toString() {
+        System.out.println("==========" +
+                    "ID: " + id + "\n" +
+                    "Name: " + name + "\n" +
+                    "Projects: " + projects + "\n" +
+                    "==========");
+
+        return null;
+    }
 }

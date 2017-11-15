@@ -24,4 +24,13 @@ public class Skill {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        System.out.println();
+        return "==========" + "\n" +
+                "ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "==========" + "\n";
+    }
 }

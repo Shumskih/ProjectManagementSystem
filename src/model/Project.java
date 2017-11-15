@@ -44,4 +44,15 @@ public class Project {
     public void setCost(Integer cost) {
         this.cost = cost;
     }
+
+    @Override
+    public String toString() {
+        return "\n" +
+                "==========" + "\n" +
+                "ID: " + id + "\n" +
+                "Name: " + name + "\n" +
+                "Version: " + version + "\n" +
+                "Cost: " + cost + "\n" +
+                "==========" + "\n";
+    }
 }
